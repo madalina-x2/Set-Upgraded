@@ -10,10 +10,14 @@ import Foundation
 
 struct Card {
     
+    //MARK: - Properties
+    
     let number: Number
     let symbol: Symbol
     let decoration: Decoration
     let color: Color
+    
+    //MARK: - Enums
     
     enum Number: Int {
         case one, two, three
@@ -39,6 +43,8 @@ struct Card {
         static let all = [Color.red, .green, .purple]
     }
 }
+
+//MARK: - Extensions
 
 extension Card: Equatable {
     static func == (lhs: Card, rhs: Card) -> Bool {
