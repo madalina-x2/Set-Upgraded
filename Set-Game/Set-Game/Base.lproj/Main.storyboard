@@ -140,7 +140,7 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XZA-nl-HMn" customClass="CardDeckView" customModule="Set_Game" customModuleProvider="target">
+                            <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="XZA-nl-HMn" customClass="CardDeckView" customModule="Set_Game" customModuleProvider="target">
                                 <rect key="frame" x="16" y="44" width="343" height="620"/>
                                 <color key="backgroundColor" red="0.54036450386047363" green="0.69022578001022339" blue="0.63133102655410767" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </view>
