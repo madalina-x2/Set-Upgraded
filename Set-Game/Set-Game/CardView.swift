@@ -63,12 +63,12 @@ class CardView: UIView {
 //        path2.fill()
 //        path3.fill()
         
-        let path = squiggle(upperLeftPoint: CGPoint(x: frame.width / 3, y: 3 * frame.height / 6.5))
-        path.fill()
-    }
-    
-    private func circle(centerPoint: CGPoint) -> UIBezierPath {
-        return UIBezierPath(arcCenter: centerPoint, radius: self.frame.height/6, startAngle: 0, endAngle: 2 * CGFloat.pi, clockwise: true)
+//        let path1 = squiggle(upperCenterPoint: CGPoint(x: frame.width / 2, y: 2 * frame.height / 6.5))
+//        let path2 = squiggle(upperCenterPoint: CGPoint(x: frame.width / 2, y: 3 * frame.height / 6.5))
+//        let path3 = squiggle(upperCenterPoint: CGPoint(x: frame.width / 2, y: 4 * frame.height / 6.5))
+//        path1.fill()
+//        path2.fill()
+//        path3.fill()
     }
     
     private func diamond(upperCenterPoint: CGPoint) -> UIBezierPath {
@@ -111,32 +111,31 @@ class CardView: UIView {
         return path
     }
     
-    private func squiggle(upperLeftPoint: CGPoint) -> UIBezierPath {
-        let squiggleWidth = frame.width / 12
-        let lowerLeftPoint = CGPoint(x: upperLeftPoint.x + frame.width / 15, y: upperLeftPoint.y + squiggleWidth)
-        let upperRightPoint = CGPoint(x: upperLeftPoint.x + frame.width / 5, y: upperLeftPoint.y + squiggleWidth / 2)
-        let lowerRightPoint = CGPoint(x: upperRightPoint.x + frame.width / 15, y: upperRightPoint.y + squiggleWidth)
+    private func squiggle(upperCenterPoint: CGPoint) -> UIBezierPath {
+        let squiggleWidth = frame.width / 10
+        let lowerCenterPoint = CGPoint(x: upperCenterPoint.x, y: upperCenterPoint.y + squiggleWidth)
+        let upperLeftPoint = CGPoint(x: upperCenterPoint.x - squiggleWidth*2, y: upperCenterPoint.y)
+        let upperRightPoint = CGPoint(x: upperCenterPoint.x + squiggleWidth*2, y: upperCenterPoint.y)
+        let lowerLeftPoint = CGPoint(x: lowerCenterPoint.x - squiggleWidth*2, y: lowerCenterPoint.y)
+        let lowerRightPoint = CGPoint(x: lowerCenterPoint.x + squiggleWidth*2, y: lowerCenterPoint.y)
         
-        let upperMidPoint = CGPoint(x: lowerRightPoint.x, y: upperLeftPoint.y)
-        let lowerMidPoint = CGPoint(x: upperLeftPoint.x, y: lowerRightPoint.y)
-        
-        let upperLeftControlPoint = CGPoint(x: upperLeftPoint.x - squiggleWidth, y: upperLeftPoint.y + squiggleWidth)
-        let upperRightControlPoint = CGPoint(x: upperRightPoint.x + squiggleWidth, y: upperRightPoint.y - squiggleWidth)
-        let lowerLeftControlPoint = CGPoint(x: upperLeftPoint.x - squiggleWidth, y: lowerLeftPoint.y + squiggleWidth)
-        let lowerRightControlPoint = CGPoint(x: upperRightPoint.x + squiggleWidth, y: lowerRightPoint.y - squiggleWidth)
+        let halfSquiggleWidth = squiggleWidth / 1.5
+        let controlPoint1 = CGPoint(x: upperLeftPoint.x - halfSquiggleWidth, y: upperLeftPoint.y - halfSquiggleWidth)
+        let controlPoint2 = CGPoint(x: upperCenterPoint.x - halfSquiggleWidth, y: upperCenterPoint.y - halfSquiggleWidth)
+        let controlPoint3 = CGPoint(x: upperCenterPoint.x + halfSquiggleWidth, y: upperCenterPoint.y + halfSquiggleWidth)
+        let controlPoint4 = CGPoint(x: upperRightPoint.x, y: upperRightPoint.y + halfSquiggleWidth)
+        let controlPoint5 = CGPoint(x: lowerRightPoint.x + halfSquiggleWidth, y: lowerRightPoint.y + halfSquiggleWidth)
+        let controlPoint6 = CGPoint(x: lowerCenterPoint.x + halfSquiggleWidth, y: lowerCenterPoint.y + halfSquiggleWidth)
+        let controlPoint7 = CGPoint(x: lowerCenterPoint.x - halfSquiggleWidth, y: lowerCenterPoint.y - halfSquiggleWidth)
+        let controlPoint8 = CGPoint(x: lowerLeftPoint.x, y: lowerLeftPoint.y - halfSquiggleWidth)
         
         let path = UIBezierPath()
         
-        path.move(to: upperLeftPoint)
-        path.addLine(to: upperRightPoint)
-        path.addLine(to: upperMidPoint)
-        path.addCurve(to: lowerRightPoint, controlPoint1: upperRightControlPoint, controlPoint2: lowerRightControlPoint)
-        
-        //path.control
-        //path.move(to: lowerRightPoint)
-        path.addLine(to: lowerLeftPoint)
-        path.addLine(to: lowerMidPoint)
-        path.addCurve(to: upperLeftPoint, controlPoint1: lowerLeftControlPoint, controlPoint2: upperLeftControlPoint)
+        path.move(to: lowerLeftPoint)
+        path.addCurve(to: upperCenterPoint, controlPoint1: controlPoint1, controlPoint2: controlPoint2)
+        path.addCurve(to: upperRightPoint, controlPoint1: controlPoint3, controlPoint2: controlPoint4)
+        path.addCurve(to: lowerCenterPoint, controlPoint1: controlPoint5, controlPoint2: controlPoint6)
+        path.addCurve(to: lowerLeftPoint, controlPoint1: controlPoint7, controlPoint2: controlPoint8)
         
         UIColor.black.setStroke()
         path.lineWidth = 1
