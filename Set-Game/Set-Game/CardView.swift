@@ -13,8 +13,11 @@ class CardView: UIView {
     //MARK: - Constants
     struct Constants {
         struct Colors {
-            static let borderColorWhenSelected = #colorLiteral(red: 0.8037576079, green: 0.7561692855, blue: 0.6305327289, alpha: 1)
-            static let borderColorWhenNotSelected = #colorLiteral(red: 0.8037576079, green: 0.788402617, blue: 0.6902456284, alpha: 1)
+            static let colorWhenSelected = #colorLiteral(red: 0.7455085054, green: 0.6910808031, blue: 0.8037576079, alpha: 1)
+            static let colorWhenNotSelected = #colorLiteral(red: 0.8037576079, green: 0.788402617, blue: 0.6902456284, alpha: 1)
+            static let colorWhenGivingHint = #colorLiteral(red: 0.9764705896, green: 0.9558855858, blue: 0.7371077641, alpha: 1)
+            static let colorWhenCorretSet = #colorLiteral(red: 0.7741263415, green: 0.8862745166, blue: 0.6670993155, alpha: 1)
+            static let colorWhenIncorrectSet = #colorLiteral(red: 0.9568627477, green: 0.6588235497, blue: 0.5450980663, alpha: 1)
         }
         struct SizeRatio {
             static let cornerFontSizeToBoundsHeight: CGFloat = 0.085
@@ -33,7 +36,7 @@ class CardView: UIView {
     
     //MARK: - Private Properties
     //private var symbols = [UIBezierPath]()
-    private var cardProperties = CardProperties(color: "", number: 1, decoration: "", symbol: "")
+    private(set) var cardProperties = CardProperties(color: "", number: 1, decoration: "", symbol: "")
 
     //MARK: - Overridden Methods
     
@@ -63,27 +66,6 @@ class CardView: UIView {
         rectColor.setFill()
         roundedRect.fill()
         drawCardOnScreen()
-        
-//        let path1 = diamond(upperCenterPoint: CGPoint(x: frame.width / 2, y: 2 * frame.height / 6.5))
-//        let path2 = diamond(upperCenterPoint: CGPoint(x: frame.width / 2, y: 3 * frame.height / 6.5))
-//        let path3 = diamond(upperCenterPoint: CGPoint(x: frame.width / 2, y: 4 * frame.height / 6.5))
-//        path1.fill()
-//        path2.fill()
-//        path3.fill()
-        
-//        let path1 = oval(upperLeftPoint: CGPoint(x: frame.width / 3, y: 2 * frame.height / 6.5))
-//        let path2 = oval(upperLeftPoint: CGPoint(x: frame.width / 3, y: 3 * frame.height / 6.5))
-//        let path3 = oval(upperLeftPoint: CGPoint(x: frame.width / 3, y: 4 * frame.height / 6.5))
-//        path1.fill()
-//        path2.fill()
-//        path3.fill()
-        
-//        let path1 = squiggle(upperCenterPoint: CGPoint(x: frame.width / 2, y: 2.5 * frame.height / 6.5))
-//        let path2 = squiggle(upperCenterPoint: CGPoint(x: frame.width / 2, y: 3.5 * frame.height / 6.5))
-//        let path3 = squiggle(upperCenterPoint: CGPoint(x: frame.width / 2, y: 4 * frame.height / 6.5))
-//        path1.fill()
-//        path2.fill()
-//        path3.fill()
     }
     
     func setupLayout() {
@@ -166,7 +148,7 @@ class CardView: UIView {
     }
     
     private func drawCardOnScreen() {
-        self.layer.borderColor = CardView.Constants.Colors.borderColorWhenNotSelected.cgColor
+        self.layer.borderColor = CardView.Constants.Colors.colorWhenNotSelected.cgColor
         
         var cardColor = UIColor()
         switch cardProperties.color {
@@ -175,7 +157,7 @@ class CardView: UIView {
         case "green":
             cardColor = #colorLiteral(red: 0.2272136807, green: 0.6645996571, blue: 0.6210204363, alpha: 1)
         default:
-            cardColor = #colorLiteral(red: 0.9696646333, green: 0.7766897678, blue: 0.34896487, alpha: 1)
+            cardColor = #colorLiteral(red: 0.9529411793, green: 0.6862745285, blue: 0.1333333403, alpha: 1)
         }
         
         var symbolOriginPoints = [CGPoint]()
@@ -215,8 +197,8 @@ class CardView: UIView {
         
         switch cardProperties.decoration {
         case "outline":
-            Constants.Colors.borderColorWhenNotSelected.setFill()
-        case "stripped":
+            Constants.Colors.colorWhenNotSelected.setFill()
+        case "striped":
             // TODO stripes
             cardColor = cardColor.withAlphaComponent(0.5)
             cardColor.setFill()
@@ -237,11 +219,6 @@ class CardView: UIView {
         //TODO
     }
     
-    private func setBackgroundColor(to rect: UIBezierPath, with color: UIColor){
-//        let rectColor = color
-//        rectColor.setFill()
-//        rect.fill()
-    }
 }
 
 //MARK: - Extensions

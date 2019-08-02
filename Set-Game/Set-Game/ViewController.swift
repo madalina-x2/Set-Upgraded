@@ -29,6 +29,8 @@ class ViewController: UIViewController {
             swipeDownForExtraCards.direction = .down
             cardDeckView.addGestureRecognizer(swipeDownForExtraCards)
             cardDeckView.addGestureRecognizer(UIRotationGestureRecognizer(target: self, action: #selector(shuffleCards)))
+            
+            //let tapToSelectCard = UITapGestureRecognizer(taget: self)
         }
     }
     //lazy private var grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds)
@@ -37,10 +39,6 @@ class ViewController: UIViewController {
     //MARK: - Button Actions
     @IBAction private func newGame(_ sender: UIButton) {
         game.reset()
-        for cardView in cardViews {
-            cardView.removeFromSuperview()
-        }
-        cardViews.removeAll()
         updateViewFromModel()
     }
     
@@ -130,25 +128,77 @@ class ViewController: UIViewController {
         setCountLabel.text = "SETS: \(game.cardsSets.count)"
     }
     
-    private func populate(card: Card) {
-        let newCardView = CardView(frame: view.frame, color: card.color.rawValue, number: card.number.rawValue, decoration: card.decoration.rawValue, symbol: card.symbol.rawValue)
-        cardViews.append(newCardView)
-        var grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds.insetBy(dx: 10, dy: 10))
-        grid.cellCount = cardViews.count
-        for (index, view) in cardViews.enumerated() {
-            let view = view
-            view.frame = grid[index]!
-            view.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-            view.frame = view.frame.insetBy(dx: 5, dy: 5)
-            cardDeckView.addSubview(view)
+    private func set(cardView: CardView, selected: Bool){
+        if selected {
+            cardView.backgroundColor = CardView.Constants.Colors.colorWhenSelected
+        } else {
+            cardView.backgroundColor = CardView.Constants.Colors.colorWhenNotSelected
         }
     }
     
-    private func updateCardViews() {
-        if (cardViews.count < game.cardsOnTable.count){
-            for index in cardViews.count..<game.cardsOnTable.count {
-                populate(card: game.cardsOnTable[index])
+    private func setCardViewBackgroundColor(cardView: CardView, card: Card) {
+        if game.cardsHint.contains(card) {
+            cardView.backgroundColor = CardView.Constants.Colors.colorWhenGivingHint
+        }
+        if game.cardsSelected.count == 3, game.cardsSelected.contains(card) {
+            if self.game.isSet == true {
+                cardView.backgroundColor = CardView.Constants.Colors.colorWhenCorretSet
+            } else {
+                UIView.animate(withDuration: 0.3, animations: {
+                    cardView.backgroundColor = CardView.Constants.Colors.colorWhenIncorrectSet
+                }) { (_) in
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
+                        self.set(cardView: cardView, selected: self.game.cardsSelected.contains(card))
+                    })
+                }
+                return
             }
+        }
+        set(cardView: cardView, selected: game.cardsSelected.contains(card))
+    }
+    
+    @objc private func didTap(_ gesture: UITapGestureRecognizer) {
+        guard let aView = gesture.view else {
+            return
+        }
+        print("tap card view at index: \(aView.tag)")
+        game.chooseCard(at: aView.tag)
+        updateViewFromModel()
+    }
+    
+    private func populate(card: Card) {
+        let newCardView = CardView(frame: view.frame, color: card.color.rawValue, number: card.number.rawValue, decoration: card.decoration.rawValue, symbol: card.symbol.rawValue)
+        newCardView.tag = cardViews.count
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
+        newCardView.addGestureRecognizer(tap)
+        
+        cardViews.append(newCardView)
+        
+        setCardViewBackgroundColor(cardView: newCardView, card: card)
+        
+        var grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds.insetBy(dx: 10, dy: 10))
+        grid.cellCount = cardViews.count
+        
+        for (index, cardView) in cardViews.enumerated() {
+            cardView.frame = grid[index]!
+            cardView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+            cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
+            cardDeckView.addSubview(cardView)
+        }
+    }
+    
+    private func clearCardDeckView() {
+        for cardView in cardViews {
+            cardView.removeFromSuperview()
+        }
+        cardViews.removeAll()
+    }
+    
+    private func updateCardViews() {
+        clearCardDeckView()
+        for card in game.cardsOnTable {
+            populate(card: card)
         }
     }
     
