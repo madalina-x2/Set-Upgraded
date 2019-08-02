@@ -24,22 +24,36 @@ class CardView: UIView {
         }
     }
     
+    struct CardProperties {
+        var color = ""
+        var number = 1
+        var decoration = ""
+        var symbol = ""
+    }
+    
     //MARK: - Private Properties
-    private var symbols = [UIBezierPath]()
+    //private var symbols = [UIBezierPath]()
+    private var cardProperties = CardProperties(color: "", number: 1, decoration: "", symbol: "")
 
     //MARK: - Overridden Methods
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        //setLayout()
-    }
+//    override init(frame: CGRect) {
+//        super.init(frame: frame)
+//        setupLayout()
+//    }
     
-    convenience init(frame: CGRect, card: Card) {
-        self.init(frame: frame)
+    init(frame: CGRect, color : String, number : Int, decoration : String, symbol: String) {
+        cardProperties.color = color
+        cardProperties.number = number
+        cardProperties.decoration = decoration
+        cardProperties.symbol = symbol
+        //setupLayout()
+        super.init(frame: frame)
     }
     
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
+        setupLayout()
     }
     
     override func draw(_ rect: CGRect) {
@@ -48,6 +62,7 @@ class CardView: UIView {
         let rectColor = #colorLiteral(red: 0.8037576079, green: 0.788402617, blue: 0.6902456284, alpha: 1)
         rectColor.setFill()
         roundedRect.fill()
+        drawCardOnScreen()
         
 //        let path1 = diamond(upperCenterPoint: CGPoint(x: frame.width / 2, y: 2 * frame.height / 6.5))
 //        let path2 = diamond(upperCenterPoint: CGPoint(x: frame.width / 2, y: 3 * frame.height / 6.5))
@@ -63,12 +78,18 @@ class CardView: UIView {
 //        path2.fill()
 //        path3.fill()
         
-//        let path1 = squiggle(upperCenterPoint: CGPoint(x: frame.width / 2, y: 2 * frame.height / 6.5))
-//        let path2 = squiggle(upperCenterPoint: CGPoint(x: frame.width / 2, y: 3 * frame.height / 6.5))
+//        let path1 = squiggle(upperCenterPoint: CGPoint(x: frame.width / 2, y: 2.5 * frame.height / 6.5))
+//        let path2 = squiggle(upperCenterPoint: CGPoint(x: frame.width / 2, y: 3.5 * frame.height / 6.5))
 //        let path3 = squiggle(upperCenterPoint: CGPoint(x: frame.width / 2, y: 4 * frame.height / 6.5))
 //        path1.fill()
 //        path2.fill()
 //        path3.fill()
+    }
+    
+    func setupLayout() {
+        self.layer.borderWidth = 2
+        self.clipsToBounds = true
+        self.contentMode = .redraw
     }
     
     private func diamond(upperCenterPoint: CGPoint) -> UIBezierPath {
@@ -145,7 +166,71 @@ class CardView: UIView {
     }
     
     private func drawCardOnScreen() {
-        //TODO
+        self.layer.borderColor = CardView.Constants.Colors.borderColorWhenNotSelected.cgColor
+        
+        var cardColor = UIColor()
+        switch cardProperties.color {
+        case "red":
+            cardColor = #colorLiteral(red: 0.8035931587, green: 0.3512506187, blue: 0.459513247, alpha: 1)
+        case "green":
+            cardColor = #colorLiteral(red: 0.2272136807, green: 0.6645996571, blue: 0.6210204363, alpha: 1)
+        default:
+            cardColor = #colorLiteral(red: 0.9696646333, green: 0.7766897678, blue: 0.34896487, alpha: 1)
+        }
+        
+        var symbolOriginPoints = [CGPoint]()
+        var divider = CGFloat()
+        if (cardProperties.symbol == "oval") {
+            divider = 3.0
+        } else { divider = 2.0}
+        let xCoordinate = frame.width / divider
+        let yCoordinate = frame.height / 6.5
+        switch cardProperties.number {
+        case 1:
+            symbolOriginPoints.append(CGPoint(x: xCoordinate, y: 3*yCoordinate))
+        case 2:
+            symbolOriginPoints.append(CGPoint(x: xCoordinate, y: 2.5*yCoordinate))
+            symbolOriginPoints.append(CGPoint(x: xCoordinate, y: 3.5*yCoordinate))
+        default:
+            symbolOriginPoints.append(CGPoint(x: xCoordinate, y: 2*yCoordinate))
+            symbolOriginPoints.append(CGPoint(x: xCoordinate, y: 3*yCoordinate))
+            symbolOriginPoints.append(CGPoint(x: xCoordinate, y: 4*yCoordinate))
+        }
+        
+        var symbols = [UIBezierPath]()
+        switch cardProperties.symbol {
+        case "squiggle":
+            for originPoint in symbolOriginPoints {
+                symbols.append(squiggle(upperCenterPoint: originPoint))
+            }
+        case "oval":
+            for originPoint in symbolOriginPoints {
+                symbols.append(self.oval(upperLeftPoint: originPoint))
+            }
+        default:
+            for originPoint in symbolOriginPoints {
+                symbols.append(diamond(upperCenterPoint: originPoint))
+            }
+        }
+        
+        switch cardProperties.decoration {
+        case "outline":
+            Constants.Colors.borderColorWhenNotSelected.setFill()
+        case "stripped":
+            // TODO stripes
+            cardColor = cardColor.withAlphaComponent(0.5)
+            cardColor.setFill()
+        default:
+            cardColor.setFill()
+        }
+        
+        cardColor.setStroke()
+        
+        for symbol in symbols {
+            symbol.lineWidth = 3
+            symbol.stroke()
+            symbol.fill()
+        }
     }
     
     private func makeRoundedEdges(to rect: UIBezierPath, with cornerRadius: CGFloat){

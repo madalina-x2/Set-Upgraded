@@ -26,9 +26,9 @@ struct Card {
     }
     
     enum Symbol: String {
-        case triangle, circle, square
+        case squiggle, oval, diamond
         var description: String { return rawValue }
-        static let all = [Symbol.triangle, .circle, .square]
+        static let all = [Symbol.squiggle, .oval, .diamond]
     }
     
     enum Decoration: String {
