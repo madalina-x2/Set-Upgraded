@@ -10,6 +10,7 @@ import UIKit
 
 class CardDeckView: UIView {
 
+    //MARK: - Overriden Methods
     override func draw(_ rect: CGRect) {
         let roundedRect = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
         roundedRect.addClip()
@@ -17,18 +18,11 @@ class CardDeckView: UIView {
         rectColor.setFill()
         roundedRect.fill()
     }
-
 }
 
+//MARK: - Extension
 extension CardDeckView {
-    private struct SizeRatio {
-        static let cornerFontSizeToBoundsHeight: CGFloat = 0.085
-        static let cornerRadiusToBoundsHeight: CGFloat = 0.03
-        static let cornerOffsetToCornerRadius: CGFloat = 0.33
-        static let faceCardImageSizeToBoundsSize: CGFloat = 0.70
-    }
-    
     private var cornerRadius: CGFloat {
-        return bounds.size.height * SizeRatio.cornerRadiusToBoundsHeight
+        return bounds.size.height * CardView.Constants.SizeRatio.cornerRadiusToBoundsHeight
     }
 }

@@ -29,7 +29,6 @@ struct Game {
     private(set) var iosScore = 0
     private(set) var set = false
     private(set) var playVersusIos = false
-    private(set) var cardsOnTable = [Card]()
     private(set) var cardsSets = [[Card]]()
     private(set) var cardsHint = [Card]()
     private(set) var startTime = Date()
@@ -37,6 +36,7 @@ struct Game {
     
     //MARK: - Public Properties
     var cardsSelected = [Card]()
+    var cardsOnTable = [Card]()
     var deckCount: Int { return deck.cards.count }
     
     //MARK: - Computed Properties
@@ -134,7 +134,6 @@ struct Game {
 }
 
 //MARK: - Extensions
-
 private extension Game {
     
     enum Score: Int {
