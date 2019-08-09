@@ -168,9 +168,7 @@ class CardView: UIView {
     private func getSymbolOriginPoints(cardProperties: CardProperties) -> [CGPoint] {
         var symbolOriginPoints = [CGPoint]()
         var divider = CGFloat()
-        if (cardProperties.symbol == "oval") {
-            divider = 3.0
-        } else { divider = 2.0}
+        divider = cardProperties.symbol == "oval" ? 3.0 : 2.0
         let xCoordinate = frame.width / divider
         let yCoordinate = frame.height / 6.5
         switch cardProperties.number {

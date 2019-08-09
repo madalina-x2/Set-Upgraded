@@ -30,6 +30,7 @@ class ViewController: UIViewController {
         }
     }
     private var cardViews = [CardView]()
+    lazy private var grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds.insetBy(dx: 10, dy: 10))
     
     //MARK: - Button Actions
     @IBAction private func newGame(_ sender: UIButton) {
@@ -58,13 +59,20 @@ class ViewController: UIViewController {
         waitForFunc(duration: 10, selector: #selector(self.iosTurn))
         updateViewFromModel()
     }
-                                                                                                                                                                                                                                                                                                                                                                                                                                             
+    
     //MARK: - Overriden Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds.insetBy(dx: 10, dy: 10))
         updateViewFromModel()
     }
+    
+    
     
     //MARK: - Auxiliary Methods
     
@@ -188,7 +196,6 @@ class ViewController: UIViewController {
     }
     
     private func displayCardsAccordingToGrid() {
-        var grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds.insetBy(dx: 10, dy: 10))
         grid.cellCount = cardViews.count
         
         for (index, cardView) in cardViews.enumerated() {
