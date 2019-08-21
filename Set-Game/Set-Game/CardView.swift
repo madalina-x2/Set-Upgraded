@@ -35,6 +35,7 @@ class CardView: UIView {
     private var cardProperties = CardProperties(color: "", number: 1, decoration: "", symbol: "")
     private var roundedRect = UIBezierPath()
     private var currentCardColor = UIColor()
+    var isFaceUp = false { didSet { setNeedsDisplay(); setNeedsLayout() } }
     
     //MARK: - Overriden Methods
     init(frame: CGRect, color : String, number : Int, decoration : String, symbol: String) {
@@ -207,30 +208,32 @@ class CardView: UIView {
     
     //MARK: - UI Methods
     private func drawCardOnScreen() {
-        let cardColor = getCardColor(cardProperties: cardProperties)
-        let symbolOriginPoints = getSymbolOriginPoints(cardProperties: cardProperties)
-        let symbols = getSymbolPaths(cardProperties: cardProperties, symbolOriginPoints: symbolOriginPoints)
-        
-        var stripeyPath = UIBezierPath()
-        switch cardProperties.decoration {
-        case "outline":
-            Constants.Colors.colorWhenNotSelected.setFill()
-        case "striped":
-            Constants.Colors.colorWhenNotSelected.setFill()
-            stripeyPath = drawStripes()
-        default:
-            cardColor.setFill()
-        }
-        
-        cardColor.setStroke()
-        for symbol in symbols {
-            UIGraphicsGetCurrentContext()?.saveGState()
-            symbol.lineWidth = 3
-            symbol.stroke()
-            symbol.fill()
-            symbol.addClip()
-            stripeyPath.stroke()
-            UIGraphicsGetCurrentContext()?.restoreGState()
+        if isFaceUp {
+            let cardColor = getCardColor(cardProperties: cardProperties)
+            let symbolOriginPoints = getSymbolOriginPoints(cardProperties: cardProperties)
+            let symbols = getSymbolPaths(cardProperties: cardProperties, symbolOriginPoints: symbolOriginPoints)
+            
+            var stripeyPath = UIBezierPath()
+            switch cardProperties.decoration {
+            case "outline":
+                Constants.Colors.colorWhenNotSelected.setFill()
+            case "striped":
+                Constants.Colors.colorWhenNotSelected.setFill()
+                stripeyPath = drawStripes()
+            default:
+                cardColor.setFill()
+            }
+            
+            cardColor.setStroke()
+            for symbol in symbols {
+                UIGraphicsGetCurrentContext()?.saveGState()
+                symbol.lineWidth = 3
+                symbol.stroke()
+                symbol.fill()
+                symbol.addClip()
+                stripeyPath.stroke()
+                UIGraphicsGetCurrentContext()?.restoreGState()
+            }
         }
     }
     

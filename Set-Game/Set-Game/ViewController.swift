@@ -31,6 +31,8 @@ class ViewController: UIViewController {
     }
     private var cardViews = [CardView]()
     lazy private var grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds.insetBy(dx: 10, dy: 10))
+    lazy var animator = UIDynamicAnimator(referenceView: cardDeckView)
+    lazy var cardBehaviour = CardViewBehaviour(in: animator)
     
     //MARK: - Button Actions
     @IBAction private func newGame(_ sender: UIButton) {
@@ -188,11 +190,18 @@ class ViewController: UIViewController {
     }
     
     @objc private func didTap(_ gesture: UITapGestureRecognizer) {
-        guard let aView = gesture.view else {
+        guard let cardView = gesture.view else {
             return
         }
-        game.chooseCard(at: aView.tag)
+        game.chooseCard(at: cardView.tag)
         updateViewFromModel()
+        UIViewPropertyAnimator.runningPropertyAnimator(
+            withDuration: 0,
+            delay: 0.5,
+            options: [],
+            animations: {},
+            completion: cardBehaviour.flipOver(cardViews.first!)
+        )
     }
     
     private func displayCardsAccordingToGrid() {
