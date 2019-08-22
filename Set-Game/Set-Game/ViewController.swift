@@ -223,6 +223,8 @@ class ViewController: UIViewController {
 //                self.cardBehaviour.snapTo(retreatingPoint: self.cardDeckView.cardRetreatingPoint , cardView: self.cardViews[currentView.tag])
 //            }
 //        )
+        
+        cardBehaviour.spin360(cardViews[currentView.tag], duration: 1.0, delay: 0.7)
     }
     
     private func displayCardsAccordingToGrid() {

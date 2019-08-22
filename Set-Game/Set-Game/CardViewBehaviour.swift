@@ -77,12 +77,21 @@ class CardViewBehaviour: UIDynamicBehavior {
         addChildBehavior(snap)
         snapBehaviors[snap] = cardView
         
-        // change cards size to discard pile's size
         UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: Constants.Durations.snapWhenMatchedTime,
             delay: 0,
             options: [],
             animations: { cardView.bounds.size = retreatingPoint.size },
+            completion: nil
+        )
+    }
+    
+    func spin360(_ cardView: CardView, duration: TimeInterval, delay: TimeInterval) {        
+        UIViewPropertyAnimator.runningPropertyAnimator(
+            withDuration: duration,
+            delay: delay,
+            options: [],
+            animations: { cardView.transform = cardView.transform.rotated(by: CGFloat.pi) },
             completion: nil
         )
     }
