@@ -142,7 +142,33 @@
                             </stackView>
                             <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="XZA-nl-HMn" customClass="CardDeckView" customModule="Set_Game" customModuleProvider="target">
                                 <rect key="frame" x="16" y="44" width="343" height="620"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="avD-K9-Pme">
+                                        <rect key="frame" x="0.0" y="610" width="10" height="10"/>
+                                        <color key="backgroundColor" red="0.43071246147155762" green="0.55296415090560913" blue="0.50584709644317627" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="10" id="84O-eJ-6ce"/>
+                                            <constraint firstAttribute="width" constant="10" id="ITf-k8-dd4"/>
+                                        </constraints>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cxk-aP-fWd">
+                                        <rect key="frame" x="333" y="610" width="10" height="10"/>
+                                        <color key="backgroundColor" red="0.43071246149999998" green="0.55296415089999995" blue="0.50584709640000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="10" id="4O6-m5-d2F"/>
+                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="10" id="QBE-EX-isS"/>
+                                            <constraint firstAttribute="width" constant="10" id="aTV-KQ-hms"/>
+                                            <constraint firstAttribute="height" constant="10" id="gNi-Oo-oAY"/>
+                                        </constraints>
+                                    </button>
+                                </subviews>
                                 <color key="backgroundColor" red="0.54036450386047363" green="0.69022578001022339" blue="0.63133102655410767" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="bottom" secondItem="avD-K9-Pme" secondAttribute="bottom" id="9XY-wJ-mMe"/>
+                                    <constraint firstAttribute="bottom" secondItem="Cxk-aP-fWd" secondAttribute="bottom" id="G0u-xd-fXp"/>
+                                    <constraint firstItem="avD-K9-Pme" firstAttribute="leading" secondItem="XZA-nl-HMn" secondAttribute="leading" id="JZL-xw-aNP"/>
+                                    <constraint firstAttribute="trailing" secondItem="Cxk-aP-fWd" secondAttribute="trailing" id="ury-Hd-6uH"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.54036450386047363" green="0.69022578001022339" blue="0.63133102655410767" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -165,6 +191,8 @@
                     </view>
                     <connections>
                         <outlet property="cardDeckView" destination="XZA-nl-HMn" id="32g-sG-ckz"/>
+                        <outlet property="cardRetreatingPointButton" destination="Cxk-aP-fWd" id="Le6-4W-PTc"/>
+                        <outlet property="cardSpawningPointButton" destination="avD-K9-Pme" id="BvZ-X6-dQs"/>
                         <outlet property="dealCardsButton" destination="bCa-yj-IwH" id="LsC-QN-p0U"/>
                         <outlet property="deckCountLabel" destination="yyw-xQ-gXL" id="18F-Sj-Tgo"/>
                         <outlet property="iosLabel" destination="Jut-NL-pXd" id="HFf-O1-7Zr"/>

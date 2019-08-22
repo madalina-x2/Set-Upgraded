@@ -15,6 +15,10 @@ class ViewController: UIViewController {
     private var playAgainstIos = false
     private var iosWonRound = false
     private var timer: Timer?
+    
+    @IBOutlet weak var cardSpawningPointButton: UIButton!
+    @IBOutlet weak var cardRetreatingPointButton: UIButton!
+    
     @IBOutlet weak private var setCountLabel: UILabel!
     @IBOutlet weak private var scoreLabel: UILabel!
     @IBOutlet weak private var deckCountLabel: UILabel!
@@ -70,6 +74,10 @@ class ViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        
+        cardDeckView.cardSpawningPoint = cardDeckView.convert(cardSpawningPointButton!.frame, from: cardSpawningPointButton!.superview)
+        cardDeckView.cardRetreatingPoint = cardDeckView.convert(cardRetreatingPointButton!.frame, from: cardRetreatingPointButton!.superview)
+        
         grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds.insetBy(dx: 10, dy: 10))
         updateViewFromModel()
     }
@@ -204,6 +212,17 @@ class ViewController: UIViewController {
             animations: {},
             completion: cardBehaviour.flipOver(cardViews[currentView.tag])
         )
+        
+//        cardBehaviour.snapTo(retreatingPoint: self.cardDeckView.cardRetreatingPoint! , cardView: self.cardViews[currentView.tag])
+        
+//        timer?.invalidate()
+//        timer = Timer.scheduledTimer(
+//            withTimeInterval: 3.0,
+//            repeats: false,
+//            block: { _ in
+//                self.cardBehaviour.snapTo(retreatingPoint: self.cardDeckView.cardRetreatingPoint , cardView: self.cardViews[currentView.tag])
+//            }
+//        )
     }
     
     private func displayCardsAccordingToGrid() {

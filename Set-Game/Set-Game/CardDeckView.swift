@@ -9,6 +9,9 @@
 import UIKit
 
 class CardDeckView: UIView {
+    
+    var cardSpawningPoint: CGRect!
+    var cardRetreatingPoint: CGRect!
 
     //MARK: - Overriden Methods
     override func draw(_ rect: CGRect) {

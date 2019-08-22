@@ -24,6 +24,10 @@ class CardViewBehaviour: UIDynamicBehavior {
         }
     }
     
+    // MARK: - Properties
+    
+    var snapBehaviors: [UISnapBehavior: CardView] = [:]
+    
     // MARK: - Overridden Methods
     
     override init() {
@@ -63,5 +67,23 @@ class CardViewBehaviour: UIDynamicBehavior {
                 completion: nil
             )
         }}
+    }
+    
+    func snapTo(retreatingPoint: CGRect, cardView: CardView) {
+        collisionBehaviour.removeItem(cardView)
+        
+        let snap = UISnapBehavior(item: cardView, snapTo: retreatingPoint.origin)
+        snap.damping = 1.9
+        addChildBehavior(snap)
+        snapBehaviors[snap] = cardView
+        
+        // change cards size to discard pile's size
+        UIViewPropertyAnimator.runningPropertyAnimator(
+            withDuration: Constants.Durations.snapWhenMatchedTime,
+            delay: 0,
+            options: [],
+            animations: { cardView.bounds.size = retreatingPoint.size },
+            completion: nil
+        )
     }
 }
