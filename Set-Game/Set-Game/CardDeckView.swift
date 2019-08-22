@@ -12,6 +12,7 @@ class CardDeckView: UIView {
     
     var cardSpawningPoint: CGRect!
     var cardRetreatingPoint: CGRect!
+    lazy var grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: bounds.insetBy(dx: 10, dy: 10))
 
     //MARK: - Overriden Methods
     override func draw(_ rect: CGRect) {

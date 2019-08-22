@@ -34,7 +34,6 @@ class ViewController: UIViewController {
         }
     }
     private var cardViews = [CardView]()
-    lazy private var grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds.insetBy(dx: 10, dy: 10))
     lazy var animator = UIDynamicAnimator(referenceView: cardDeckView)
     lazy var cardBehaviour = CardViewBehaviour(in: animator)
     
@@ -42,6 +41,15 @@ class ViewController: UIViewController {
     @IBAction private func newGame(_ sender: UIButton) {
         game.reset()
         updateViewFromModel()
+        
+        UIViewPropertyAnimator.runningPropertyAnimator(
+            withDuration: 0,
+            delay: 0.5,
+            options: [],
+            animations: {},
+            completion: cardBehaviour.animateNewCards(in: cardDeckView, cardsToAnimate: cardViews, delay: 3.0)
+        )
+        
         playAgainstIos = false
         timer?.invalidate()
         iosWonRound = false
@@ -78,8 +86,15 @@ class ViewController: UIViewController {
         cardDeckView.cardSpawningPoint = cardDeckView.convert(cardSpawningPointButton!.frame, from: cardSpawningPointButton!.superview)
         cardDeckView.cardRetreatingPoint = cardDeckView.convert(cardRetreatingPointButton!.frame, from: cardRetreatingPointButton!.superview)
         
-        grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds.insetBy(dx: 10, dy: 10))
+        cardDeckView.grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds.insetBy(dx: 10, dy: 10))
         updateViewFromModel()
+        UIViewPropertyAnimator.runningPropertyAnimator(
+            withDuration: 0,
+            delay: 0.5,
+            options: [],
+            animations: {},
+            completion: cardBehaviour.animateNewCards(in: cardDeckView, cardsToAnimate: cardViews, delay: 5.0)
+        )
     }
     
     
@@ -224,17 +239,20 @@ class ViewController: UIViewController {
 //            }
 //        )
         
-        cardBehaviour.spin360(cardViews[currentView.tag], duration: 1.0, delay: 0.7)
+        //cardBehaviour.spin360(cardViews[currentView.tag], duration: 1.0, delay: 0.7)
+        
+        //cardBehaviour.bounce(item: cardViews[currentView.tag])
     }
     
     private func displayCardsAccordingToGrid() {
-        grid.cellCount = cardViews.count
+        cardDeckView.grid.cellCount = cardViews.count
         
         for (index, cardView) in cardViews.enumerated() {
-            cardView.frame = grid[index]!
+            cardView.frame = cardDeckView.grid[index]!
             cardView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
             cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
             cardDeckView.addSubview(cardView)
+            cardView.alpha = 0.0
         }
     }
     

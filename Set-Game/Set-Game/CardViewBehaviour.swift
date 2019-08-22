@@ -98,6 +98,52 @@ class CardViewBehaviour: UIDynamicBehavior {
         )
     }
     
+    func push(_ item: UIDynamicItem) {
+        let push = UIPushBehavior(items: [item], mode: .instantaneous)
+        push.angle = CGFloat.pi.arc4random
+        let magnitude: CGFloat = UIDevice.current.userInterfaceIdiom == .phone ? 2 : 20
+        push.magnitude = 1.0 + magnitude.arc4random
+        push.action = { [unowned push, weak self] in
+            self?.removeChildBehavior(push)
+        }
+        addChildBehavior(push)
+    }
+    
+    func bounce(item: UIDynamicItem) {
+        collisionBehaviour.addItem(item)
+        basicPropertyBehaviour.addItem(item)
+        push(item)
+    }
+    
+    func animateNewCards(in cardDeckView: CardDeckView, cardsToAnimate: [CardView], delay: TimeInterval) -> ((UIViewAnimatingPosition) -> Void) {
+        return { if $0 == .end {
+            let duration = Constants.Durations.dealTime
+            var delay = delay
+            var index = 0
+            
+            for cardView in cardsToAnimate {
+                self.spin360(cardView, duration: duration / 2, delay: delay)
+                self.spin360(cardView, duration: duration / 2, delay: delay + duration / 2)
+                
+                // move and flip over
+                UIViewPropertyAnimator.runningPropertyAnimator(
+                    withDuration: duration,
+                    delay: delay,
+                    options: [],
+                    animations: {
+                        cardView.center = cardDeckView.grid[index]!.getCenterOf()
+                        cardView.bounds.size = cardDeckView.grid[index]!.size
+                        cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
+                        cardView.alpha = 1.0
+                },
+                    completion: self.flipOver(cardView)
+                )
+                delay += 0.2
+                index += 1
+            }
+            }}
+    }
+    
     // MARK: - Auxiliary Methods
     
     func removeCardView(_ cardView: CardView) {
