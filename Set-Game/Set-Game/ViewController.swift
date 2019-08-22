@@ -190,17 +190,19 @@ class ViewController: UIViewController {
     }
     
     @objc private func didTap(_ gesture: UITapGestureRecognizer) {
-        guard let cardView = gesture.view else {
+        guard let currentView = gesture.view else {
             return
         }
-        game.chooseCard(at: cardView.tag)
-        updateViewFromModel()
+        game.chooseCard(at: currentView.tag)
+        //updateViewFromModel()
+        setCardViewBackgroundColor(cardView: cardViews[currentView.tag], card: game.cardsOnTable[currentView.tag])
+        
         UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: 0,
             delay: 0.5,
             options: [],
             animations: {},
-            completion: cardBehaviour.flipOver(cardViews.first!)
+            completion: cardBehaviour.flipOver(cardViews[currentView.tag])
         )
     }
     

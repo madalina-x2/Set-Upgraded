@@ -16,7 +16,7 @@ class CardViewBehaviour: UIDynamicBehavior {
         struct Durations {
             static let dealTime = 0.0
             static let rearrangeTime = 0.0
-            static let flipOverTime = 0.0
+            static let flipOverTime = 0.5
             static let snapWhenMatchedTime = 0.0
         }
         struct Delays {
