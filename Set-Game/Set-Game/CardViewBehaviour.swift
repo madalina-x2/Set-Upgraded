@@ -32,6 +32,8 @@ class CardViewBehaviour: UIDynamicBehavior {
     
     override init() {
         super.init()
+        addChildBehavior(collisionBehaviour)
+        addChildBehavior(basicPropertyBehaviour)
     }
     
     convenience init(in animator: UIDynamicAnimator) {
@@ -95,4 +97,18 @@ class CardViewBehaviour: UIDynamicBehavior {
             completion: nil
         )
     }
+    
+    // MARK: - Auxiliary Methods
+    
+    func removeCardView(_ cardView: CardView) {
+        basicPropertyBehaviour.removeItem(cardView)
+        collisionBehaviour.removeItem(cardView)
+        snapBehaviors.keys.forEach { snap in
+            if snapBehaviors[snap] == cardView {
+                snapBehaviors.removeValue(forKey: snap)
+                removeChildBehavior(snap)
+            }
+        }
+    }
 }
+
