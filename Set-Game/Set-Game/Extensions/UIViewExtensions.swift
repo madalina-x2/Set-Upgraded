@@ -11,6 +11,18 @@ import UIKit
 
 extension UIView {
     
+    func removeShadow() {
+        layer.shadowOpacity = 0.0
+        setNeedsDisplay(); setNeedsLayout()
+    }
+    
+    func reconfigureShadow() {
+        layer.shadowPath = UIBezierPath(rect: bounds).cgPath
+        layer.shadowOffset = CGSize(width: -(layer.frame.size.width / 10), height: layer.frame.size.width / 10)
+        layer.shadowOpacity = 0.5
+        setNeedsDisplay(); setNeedsLayout()
+    }
+    
     func dropShadow(scale: Bool = true) {
         layer.masksToBounds = false
         layer.shadowColor = UIColor.black.cgColor

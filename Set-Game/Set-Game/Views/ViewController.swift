@@ -90,13 +90,6 @@ class ViewController: UIViewController {
         
         cardDeckView.grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds.insetBy(dx: 10, dy: 10))
         updateViewFromModel(inCase: .initView)
-        UIViewPropertyAnimator.runningPropertyAnimator(
-            withDuration: 0,
-            delay: 0.5,
-            options: [],
-            animations: {},
-            completion: cardBehaviour.animateNewCards(in: cardDeckView, cardsToAnimate: cardViews, delay: 1.0)
-        )
     }
     
     //MARK: - Auxiliary Methods
@@ -217,6 +210,7 @@ class ViewController: UIViewController {
             selectedCardViews.removeAll()
         }
         selectedCardViews.append(cardViews[currentView.tag])
+        cardViews[currentView.tag].setCardViewState(state: .selected)
         updateViewFromModel(inCase: .touchCard)
     }
     
@@ -284,13 +278,23 @@ class ViewController: UIViewController {
         case .initView:
             updateInfoLabels()
             updateCardViews(onScreen: false)
+            UIViewPropertyAnimator.runningPropertyAnimator(
+                withDuration: 0,
+                delay: 0.5,
+                options: [],
+                animations: {},
+                completion: cardBehaviour.animateNewCards(in: cardDeckView, cardsToAnimate: cardViews, delay: 1.0)
+            )
             
         case .touchCard:
             for cardView in cardViews {
-                if selectedCardViews.contains(cardView) {
-                    cardView.setCardViewState(state: .selected)
-                } else {
+                if selectedCardViews.contains(cardView) == false {
                     cardView.setCardViewState(state: .normal)
+                }
+            }
+            if selectedCardViews.count == 3 {
+                for selectedCardView in selectedCardViews {
+                    cardBehaviour.snapTo(retreatingPoint: cardDeckView.cardRetreatingPoint, cardView: selectedCardView)
                 }
             }
             
@@ -316,8 +320,8 @@ class ViewController: UIViewController {
             let dealtCardViews = Array(arraySlice2)
             let arraySlice3 = cardViews.prefix(cardViews.count - 3)
             let cardsToReconfigure = Array(arraySlice3)
-            let index = cardBehaviour.animateGridReconfig(in: cardDeckView, cardsToAnimate: cardsToReconfigure, delay: 0)
-            cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: dealtCardViews, delay: 3, index: index)
+            cardBehaviour.animateGridReconfig(in: cardDeckView, cardsToAnimate: cardsToReconfigure, delay: 0)
+            cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: dealtCardViews, delay: 3, index: cardsToReconfigure.count)
         default:
             updateCardViews(onScreen: false)
         }

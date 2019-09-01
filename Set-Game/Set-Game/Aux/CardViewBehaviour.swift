@@ -86,7 +86,10 @@ class CardViewBehaviour: UIDynamicBehavior {
             withDuration: Constants.Durations.snapWhenMatchedTime,
             delay: Constants.Delays.none,
             options: [],
-            animations: { cardView.bounds.size = retreatingPoint.size },
+            animations: {
+                cardView.bounds.size = retreatingPoint.size
+                //cardView.reconfigureShadow()
+        },
             completion: { _ in
                 cardView.alpha = 0.0
             }
@@ -189,11 +192,9 @@ class CardViewBehaviour: UIDynamicBehavior {
     }
     
     func dealCards(in cardDeckView: CardDeckView, cardsToReconfig: [CardView], cardsToSpawn: [CardView], delay: TimeInterval) {
-        let index = self.animateGridReconfig(in: cardDeckView, cardsToAnimate: cardsToReconfig, delay: delay)
+        self.animateGridReconfig(in: cardDeckView, cardsToAnimate: cardsToReconfig, delay: delay)
         let delay = Constants.Durations.rearrangeTime
-        //let duration = Constants.Durations.dealTime
-        
-        self.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: cardsToSpawn, delay: delay, index: index)
+        self.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: cardsToSpawn, delay: delay, index: cardsToReconfig.count)
     }
     
     func animateNewCards(in cardDeckView: CardDeckView, cardsToAnimate: [CardView], delay: TimeInterval) -> ((UIViewAnimatingPosition) -> Void) {
@@ -224,31 +225,34 @@ class CardViewBehaviour: UIDynamicBehavior {
             }}
     }
     
-    func animateGridReconfig(in cardDeckView: CardDeckView, cardsToAnimate: [CardView], delay: TimeInterval) -> Int {
+    func animateGridReconfig(in cardDeckView: CardDeckView, cardsToAnimate: [CardView], delay: TimeInterval) {
         let duration = Constants.Durations.rearrangeTime
         var delay = delay
         var index = 0
         
         for cardView in cardsToAnimate {
-            self.spin360(cardView, duration: duration / 2, delay: delay)
-            self.spin360(cardView, duration: duration / 2, delay: delay + duration / 2)
-            
-            UIViewPropertyAnimator.runningPropertyAnimator(
-                withDuration: duration,
-                delay: delay,
-                options: [],
-                animations: {
-                    cardView.center = cardDeckView.grid[index]!.getCenterOf()
-                    cardView.bounds.size = cardDeckView.grid[index]!.size
-                    cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
-                    cardView.alpha = 1.0
-            },
-                completion: nil //self.flipOver(cardView)
-            )
-            delay += 0.2
-            index += 1
+            let equalVal = cardsToAnimate[0].bounds.size == cardDeckView.grid[index]!.size
+            if equalVal == false {
+                self.spin360(cardView, duration: duration / 2, delay: delay)
+                self.spin360(cardView, duration: duration / 2, delay: delay + duration / 2)
+                
+                UIViewPropertyAnimator.runningPropertyAnimator(
+                    withDuration: duration,
+                    delay: delay,
+                    options: [],
+                    animations: {
+                        cardView.center = cardDeckView.grid[index]!.getCenterOf()
+                        cardView.bounds.size = cardDeckView.grid[index]!.size
+                        cardView.reconfigureShadow()
+                        cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
+                        cardView.alpha = 1.0
+                },
+                    completion: nil
+                )
+                delay += 0.2
+                index += 1
+            }
         }
-        return index
     }
     
     // MARK: - Auxiliary Methods
