@@ -36,6 +36,12 @@ class CardView: UIView {
     private var roundedRect = UIBezierPath()
     private var currentCardColor = UIColor()
     var isFaceUp = false { didSet { setNeedsDisplay(); setNeedsLayout() } }
+    private(set) var currentState: CardState = .normal {
+        didSet { setNeedsDisplay(); setNeedsLayout() }
+    }
+    enum CardState {
+        case normal, selected, hint, matched, mismatched
+    }
     
     //MARK: - Overriden Methods
     init(frame: CGRect, color : String, number : Int, decoration : String, symbol: String) {
@@ -54,6 +60,7 @@ class CardView: UIView {
     
     override func draw(_ rect: CGRect) {
         initCard()
+        changeBackgroundColor()
         drawCardOnScreen()
     }
     
@@ -206,6 +213,10 @@ class CardView: UIView {
         return symbols
     }
     
+    func setCardViewState(state: CardState) {
+        self.currentState = state
+    }
+    
     //MARK: - UI Methods
     private func drawCardOnScreen() {
         if isFaceUp {
@@ -237,15 +248,35 @@ class CardView: UIView {
         }
     }
     
-    func changeBackgroundColor(type: String) {
-        switch type {
-        case "selected":
+    func drawBorder() {
+        alpha = 1.0
+        layer.cornerRadius = Constants.SizeRatio.cornerRadiusToBoundsHeight
+        layer.borderWidth = 2.0
+        
+        switch currentState {
+        case .normal:
+            layer.borderColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+            layer.borderWidth = 0.0
+        case .selected:
+            layer.borderColor = #colorLiteral(red: 0.5147541761, green: 0.4750006795, blue: 0.43709144, alpha: 1)
+        case .matched:
+            layer.borderColor = #colorLiteral(red: 0.721568644, green: 0.8862745166, blue: 0.5921568871, alpha: 1)
+        case .mismatched:
+            layer.borderColor = #colorLiteral(red: 0.9568627477, green: 0.6588235497, blue: 0.5450980663, alpha: 1)
+        case .hint:
+            layer.borderColor = #colorLiteral(red: 0.9764705896, green: 0.850980401, blue: 0.5490196347, alpha: 1)
+        }
+    }
+    
+    func changeBackgroundColor() {
+        switch currentState {
+        case .selected:
             currentCardColor = Constants.Colors.colorWhenSelected
-        case "hint":
+        case .hint:
             currentCardColor = Constants.Colors.colorWhenGivingHint
-        case "valid set":
+        case .matched:
             currentCardColor = Constants.Colors.colorWhenCorrectSet
-        case "invalid set":
+        case .mismatched:
             currentCardColor = Constants.Colors.colorWhenIncorrectSet
         default:
             currentCardColor = Constants.Colors.colorWhenNotSelected
@@ -264,6 +295,7 @@ class CardView: UIView {
         let rectColor = currentCardColor
         rectColor.setFill()
         roundedRect.fill()
+        self.dropShadow()
     }
 }
 

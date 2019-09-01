@@ -144,21 +144,13 @@
                                 <rect key="frame" x="16" y="44" width="343" height="620"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="avD-K9-Pme">
-                                        <rect key="frame" x="0.0" y="610" width="10" height="10"/>
-                                        <color key="backgroundColor" red="0.43071246147155762" green="0.55296415090560913" blue="0.50584709644317627" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="10" id="84O-eJ-6ce"/>
-                                            <constraint firstAttribute="width" constant="10" id="ITf-k8-dd4"/>
-                                        </constraints>
+                                        <rect key="frame" x="0.0" y="590" width="30" height="30"/>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cxk-aP-fWd">
-                                        <rect key="frame" x="333" y="610" width="10" height="10"/>
-                                        <color key="backgroundColor" red="0.43071246149999998" green="0.55296415089999995" blue="0.50584709640000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                        <rect key="frame" x="328" y="605" width="15" height="15"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="10" id="4O6-m5-d2F"/>
-                                            <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="10" id="QBE-EX-isS"/>
-                                            <constraint firstAttribute="width" constant="10" id="aTV-KQ-hms"/>
-                                            <constraint firstAttribute="height" constant="10" id="gNi-Oo-oAY"/>
+                                            <constraint firstAttribute="height" constant="15" id="5PV-6J-J5J"/>
+                                            <constraint firstAttribute="width" constant="15" id="lnB-xR-5Ck"/>
                                         </constraints>
                                     </button>
                                 </subviews>

@@ -34,21 +34,17 @@ class ViewController: UIViewController {
         }
     }
     private var cardViews = [CardView]()
+    private var hintCardViews = [CardView]()
+    private var selectedCardViews = [CardView]()
+    private var dealtCardViews = [CardView]()
     lazy var animator = UIDynamicAnimator(referenceView: cardDeckView)
     lazy var cardBehaviour = CardViewBehaviour(in: animator)
     
     //MARK: - Button Actions
     @IBAction private func newGame(_ sender: UIButton) {
         game.reset()
-        updateViewFromModel()
-        
-        UIViewPropertyAnimator.runningPropertyAnimator(
-            withDuration: 0,
-            delay: 0.5,
-            options: [],
-            animations: {},
-            completion: cardBehaviour.animateNewCards(in: cardDeckView, cardsToAnimate: cardViews, delay: 3.0)
-        )
+        updateViewFromModel(inCase: .initView)
+        cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: cardViews, delay: 1.0, index: 0)
         
         playAgainstIos = false
         timer?.invalidate()
@@ -58,12 +54,18 @@ class ViewController: UIViewController {
     
     @IBAction private func dealCards(_ sender: UIButton) {
         game.dealThreeCards()
-        updateViewFromModel()
+        updateViewFromModel(inCase: .deal3)
     }
     
     @IBAction func giveHint(_ sender: UIButton) {
         game.giveHint()
-        updateViewFromModel()
+        hintCardViews.removeAll()
+        for (index, card) in game.cardsOnTable.enumerated() {
+            if game.cardsHint.contains(card) {
+                hintCardViews.append(cardViews[index])
+            }
+        }
+        updateViewFromModel(inCase: .giveHint)
     }
     
     @IBAction func playAgainstIos(_ sender: UIButton) {
@@ -71,7 +73,7 @@ class ViewController: UIViewController {
         playAgainstIos = true
         iosLabel.text = "iOS: 🤔"
         waitForFunc(duration: 10, selector: #selector(self.iosTurn))
-        updateViewFromModel()
+        updateViewFromModel(inCase: .updateLabels)
     }
     
     //MARK: - Overriden Methods
@@ -87,23 +89,21 @@ class ViewController: UIViewController {
         cardDeckView.cardRetreatingPoint = cardDeckView.convert(cardRetreatingPointButton!.frame, from: cardRetreatingPointButton!.superview)
         
         cardDeckView.grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds.insetBy(dx: 10, dy: 10))
-        updateViewFromModel()
+        updateViewFromModel(inCase: .initView)
         UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: 0,
             delay: 0.5,
             options: [],
             animations: {},
-            completion: cardBehaviour.animateNewCards(in: cardDeckView, cardsToAnimate: cardViews, delay: 5.0)
+            completion: cardBehaviour.animateNewCards(in: cardDeckView, cardsToAnimate: cardViews, delay: 1.0)
         )
     }
-    
-    
     
     //MARK: - Auxiliary Methods
     
     @objc func shuffleCards() {
         game.cardsOnTable.shuffle()
-        updateViewFromModel()
+        updateViewFromModel(inCase: .shuffle)
     }
     
     @objc func iosEnterRound() {
@@ -112,7 +112,7 @@ class ViewController: UIViewController {
         }
         iosWonRound = true
         game.giveHint()
-        updateViewFromModel()
+        updateViewFromModel(inCase: .giveHint)
         iosLabel.text = "iOS: 😂"
         waitForFunc(duration: 2.0, selector: #selector(self.iosMakeSet))
     }
@@ -120,7 +120,7 @@ class ViewController: UIViewController {
     @objc func iosMakeSet() {
         game.cardsSelected.removeAll()
         game.cardsSelected = game.cardsHint
-        updateViewFromModel()
+        //updateViewFromModel()
         game.isSet = game.isSet
         waitForFunc(duration: 2.0, selector: #selector(self.iosExitRound))
     }
@@ -128,7 +128,7 @@ class ViewController: UIViewController {
     @objc func iosExitRound() {
         iosLabel.text = "iOS: 🤔"
         
-        updateViewFromModel()
+        updateViewFromModel(inCase: .updateLabels)
         cardViews.forEach { (cardView) in
             cardView.isUserInteractionEnabled = true
         }
@@ -181,26 +181,22 @@ class ViewController: UIViewController {
         }
     }
     
-    private func set(cardView: CardView, selected: Bool){
+    private func set(cardView: CardView, selected: Bool) {
         if selected {
-            cardView.changeBackgroundColor(type: "selected")
+            cardView.changeBackgroundColor()
         } else {
-            cardView.changeBackgroundColor(type: "not selected")
+            cardView.changeBackgroundColor()
         }
     }
     
     private func setCardViewBackgroundColor(cardView: CardView, card: Card) {
-        if game.cardsHint.contains(card) {
-           cardView.changeBackgroundColor(type: "hint")
-            return
-        }
         if game.cardsSelected.count == 3, game.cardsSelected.contains(card) {
             if game.cardsSelected.isSet() == true {
-                cardView.changeBackgroundColor(type: "valid set")
+                cardView.changeBackgroundColor()
                 return
             } else {
                 UIView.animate(withDuration: 0.3, animations: {
-                    cardView.changeBackgroundColor(type: "invalid set")
+                    cardView.changeBackgroundColor()
                 }) { (_) in
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2.0, execute: {
                         self.set(cardView: cardView, selected: self.game.cardsSelected.contains(card))
@@ -217,54 +213,52 @@ class ViewController: UIViewController {
             return
         }
         game.chooseCard(at: currentView.tag)
-        //updateViewFromModel()
-        setCardViewBackgroundColor(cardView: cardViews[currentView.tag], card: game.cardsOnTable[currentView.tag])
-        
-        UIViewPropertyAnimator.runningPropertyAnimator(
-            withDuration: 0,
-            delay: 0.5,
-            options: [],
-            animations: {},
-            completion: cardBehaviour.flipOver(cardViews[currentView.tag])
-        )
-        
-//        cardBehaviour.snapTo(retreatingPoint: self.cardDeckView.cardRetreatingPoint! , cardView: self.cardViews[currentView.tag])
-        
-//        timer?.invalidate()
-//        timer = Timer.scheduledTimer(
-//            withTimeInterval: 3.0,
-//            repeats: false,
-//            block: { _ in
-//                self.cardBehaviour.snapTo(retreatingPoint: self.cardDeckView.cardRetreatingPoint , cardView: self.cardViews[currentView.tag])
-//            }
-//        )
-        
-        //cardBehaviour.spin360(cardViews[currentView.tag], duration: 1.0, delay: 0.7)
-        
-        //cardBehaviour.bounce(item: cardViews[currentView.tag])
+        if selectedCardViews.count == 3 {
+            selectedCardViews.removeAll()
+        }
+        selectedCardViews.append(cardViews[currentView.tag])
+        updateViewFromModel(inCase: .touchCard)
     }
     
-    private func displayCardsAccordingToGrid() {
+    private func displayCardsAccordingToGrid(onScreen: Bool, inCase: UpdateViewCase) {
         cardDeckView.grid.cellCount = cardViews.count
         
-        for (index, cardView) in cardViews.enumerated() {
-            cardView.frame = cardDeckView.grid[index]!
-            cardView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
-            cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
-            cardDeckView.addSubview(cardView)
-            cardView.alpha = 0.0
+        if inCase == .deal3 {
+            let arraySlice = cardViews.suffix(3)
+            let dealtCardViews = Array(arraySlice)
+             for cardView in dealtCardViews {
+                cardView.frame = cardDeckView.cardSpawningPoint
+                cardView.alpha = 0.0
+                cardView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+                cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
+                cardDeckView.addSubview(cardView)
+            }
+        } else {
+            for (index, cardView) in cardViews.enumerated() {
+                if onScreen {
+                    cardView.frame = cardDeckView.grid[index]!
+                    cardView.isFaceUp = true
+                    cardView.alpha = 1.0
+                } else {
+                    cardView.frame = cardDeckView.cardSpawningPoint
+                    cardView.alpha = 0.0
+                }
+                cardView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
+                cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
+                cardDeckView.addSubview(cardView)
+            }
         }
     }
     
-    private func populate(card: Card) {
+    private func populate(card: Card, onScreen: Bool, inCase: UpdateViewCase) {
         let newCardView = CardView(frame: view.frame, color: card.color.rawValue, number: card.number.rawValue, decoration: card.decoration.rawValue, symbol: card.symbol.rawValue)
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
         
         newCardView.tag = cardViews.count
         newCardView.addGestureRecognizer(tap)
         cardViews.append(newCardView)
-        setCardViewBackgroundColor(cardView: newCardView, card: card)
-        displayCardsAccordingToGrid()
+        //setCardViewBackgroundColor(cardView: newCardView, card: card)
+        displayCardsAccordingToGrid(onScreen: onScreen, inCase: inCase)
     }
     
     private func clearCardDeckView() {
@@ -274,18 +268,63 @@ class ViewController: UIViewController {
         cardViews.removeAll()
     }
     
-    private func updateCardViews() {
+    private func updateCardViews(onScreen: Bool) {
         clearCardDeckView()
         for card in game.cardsOnTable {
-            populate(card: card)
+            populate(card: card, onScreen: onScreen, inCase: .initView)
         }
     }
     
-    private func updateViewFromModel() {
-        updateInfoLabels()
+    private enum UpdateViewCase {
+        case initView, touchCard, giveHint, shuffle, deal3, updateLabels
+    }
+    
+    private func updateViewFromModel(inCase: UpdateViewCase) {
+        switch inCase {
+        case .initView:
+            updateInfoLabels()
+            updateCardViews(onScreen: false)
+            
+        case .touchCard:
+            for cardView in cardViews {
+                if selectedCardViews.contains(cardView) {
+                    cardView.setCardViewState(state: .selected)
+                } else {
+                    cardView.setCardViewState(state: .normal)
+                }
+            }
+            
+        case .updateLabels:
+            updateInfoLabels()
+            didSelectSet()
+            
+        case .giveHint:
+            for cardView in cardViews {
+                if hintCardViews.contains(cardView) == false {
+                    cardDeckView.sendSubview(toBack: cardView)
+                }
+            }
+            cardBehaviour.animateHint(cardViews: hintCardViews)
+        
+        case .deal3:
+            let arraySlice = game.cardsOnTable.suffix(3)
+            let dealtCards = Array(arraySlice)
+            for card in dealtCards {
+                populate(card: card, onScreen: false, inCase: .deal3)
+            }
+            let arraySlice2 = cardViews.suffix(3)
+            let dealtCardViews = Array(arraySlice2)
+            let arraySlice3 = cardViews.prefix(cardViews.count - 3)
+            let cardsToReconfigure = Array(arraySlice3)
+            let index = cardBehaviour.animateGridReconfig(in: cardDeckView, cardsToAnimate: cardsToReconfigure, delay: 0)
+            cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: dealtCardViews, delay: 3, index: index)
+        default:
+            updateCardViews(onScreen: false)
+        }
+        
         if game.cardsSelected.count == 3 {
             didSelectSet()
         }
-        updateCardViews()
+        
     }
 }

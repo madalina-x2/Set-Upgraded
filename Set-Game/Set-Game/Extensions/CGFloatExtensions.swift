@@ -10,6 +10,10 @@ import Foundation
 import UIKit
 
 extension CGFloat {
+    var zero: CGFloat {
+        return 0.0
+    }
+    
     var arc4random: CGFloat {
         if self >= 0 {
             return CGFloat(arc4random_uniform(UInt32(self)))
