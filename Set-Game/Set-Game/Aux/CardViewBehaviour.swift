@@ -88,10 +88,11 @@ class CardViewBehaviour: UIDynamicBehavior {
             options: [],
             animations: {
                 cardView.bounds.size = retreatingPoint.size
-                //cardView.reconfigureShadow()
+                cardView.reconfigureShadow()
         },
             completion: { _ in
                 cardView.alpha = 0.0
+                cardView.removeFromSuperview()
             }
             )
     }

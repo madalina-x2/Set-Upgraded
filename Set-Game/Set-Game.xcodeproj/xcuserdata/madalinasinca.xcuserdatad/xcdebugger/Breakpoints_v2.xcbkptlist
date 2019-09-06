@@ -409,13 +409,45 @@
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Set-Game/Aux/CardViewBehaviour.swift"
-            timestampString = "589047891.475564"
+            filePath = "Set-Game/Views/ViewController.swift"
+            timestampString = "589378740.994087"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "235"
-            endingLineNumber = "235"
-            landmarkName = "animateGridReconfig(in:cardsToAnimate:delay:)"
+            startingLineNumber = "330"
+            endingLineNumber = "330"
+            landmarkName = "updateViewFromModel(inCase:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Set-Game/Views/ViewController.swift"
+            timestampString = "589378740.994467"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "336"
+            endingLineNumber = "336"
+            landmarkName = "updateViewFromModel(inCase:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Set-Game/Aux/CardViewBehaviour.swift"
+            timestampString = "589378740.994719"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "206"
+            endingLineNumber = "206"
+            landmarkName = "animateNewCards(in:cardsToAnimate:delay:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

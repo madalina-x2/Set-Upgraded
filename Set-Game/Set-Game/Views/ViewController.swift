@@ -44,7 +44,7 @@ class ViewController: UIViewController {
     @IBAction private func newGame(_ sender: UIButton) {
         game.reset()
         updateViewFromModel(inCase: .initView)
-        cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: cardViews, delay: 1.0, index: 0)
+//        cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: cardViews, delay: 1.0, index: 0)
         
         playAgainstIos = false
         timer?.invalidate()
@@ -211,6 +211,7 @@ class ViewController: UIViewController {
         }
         selectedCardViews.append(cardViews[currentView.tag])
         cardViews[currentView.tag].setCardViewState(state: .selected)
+        cardDeckView.setNeedsDisplay(); cardDeckView.setNeedsLayout()
         updateViewFromModel(inCase: .touchCard)
     }
     
@@ -222,6 +223,7 @@ class ViewController: UIViewController {
             let dealtCardViews = Array(arraySlice)
              for cardView in dealtCardViews {
                 cardView.frame = cardDeckView.cardSpawningPoint
+                cardView.isFaceUp = false
                 cardView.alpha = 0.0
                 cardView.backgroundColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 0)
                 cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
@@ -231,7 +233,7 @@ class ViewController: UIViewController {
             for (index, cardView) in cardViews.enumerated() {
                 if onScreen {
                     cardView.frame = cardDeckView.grid[index]!
-                    cardView.isFaceUp = true
+                    cardView.isFaceUp = false
                     cardView.alpha = 1.0
                 } else {
                     cardView.frame = cardDeckView.cardSpawningPoint
@@ -251,8 +253,7 @@ class ViewController: UIViewController {
         newCardView.tag = cardViews.count
         newCardView.addGestureRecognizer(tap)
         cardViews.append(newCardView)
-        //setCardViewBackgroundColor(cardView: newCardView, card: card)
-        displayCardsAccordingToGrid(onScreen: onScreen, inCase: inCase)
+//        displayCardsAccordingToGrid(onScreen: onScreen, inCase: inCase)
     }
     
     private func clearCardDeckView() {
@@ -267,6 +268,7 @@ class ViewController: UIViewController {
         for card in game.cardsOnTable {
             populate(card: card, onScreen: onScreen, inCase: .initView)
         }
+        displayCardsAccordingToGrid(onScreen: onScreen, inCase: .initView)
     }
     
     private enum UpdateViewCase {
@@ -287,15 +289,29 @@ class ViewController: UIViewController {
             )
             
         case .touchCard:
-            for cardView in cardViews {
-                if selectedCardViews.contains(cardView) == false {
-                    cardView.setCardViewState(state: .normal)
-                }
-            }
+//            for cardView in cardViews {
+//                if selectedCardViews.contains(cardView) == false {
+//                    cardView.setCardViewState(state: .normal)
+//                    //cardDeckView.setNeedsDisplay(); cardDeckView.setNeedsLayout()
+//                }
+//            }
             if selectedCardViews.count == 3 {
                 for selectedCardView in selectedCardViews {
                     cardBehaviour.snapTo(retreatingPoint: cardDeckView.cardRetreatingPoint, cardView: selectedCardView)
+                    cardViews.remove(at: selectedCardView.tag)
                 }
+                let arraySlice = game.cardsOnTable.suffix(3)
+                let dealtCards = Array(arraySlice)
+                for card in dealtCards {
+                    populate(card: card, onScreen: false, inCase: .deal3)
+                }
+                displayCardsAccordingToGrid(onScreen: false, inCase: .deal3)
+                let arraySlice2 = cardViews.suffix(3)
+                let dealtCardViews = Array(arraySlice2)
+                let arraySlice3 = cardViews.prefix(cardViews.count - 3)
+                let cardsToReconfigure = Array(arraySlice3)
+                cardBehaviour.animateGridReconfig(in: cardDeckView, cardsToAnimate: cardsToReconfigure, delay: 0)
+                cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: dealtCardViews, delay: 3, index: cardsToReconfigure.count)
             }
             
         case .updateLabels:
@@ -316,12 +332,13 @@ class ViewController: UIViewController {
             for card in dealtCards {
                 populate(card: card, onScreen: false, inCase: .deal3)
             }
+            displayCardsAccordingToGrid(onScreen: false, inCase: .deal3)
             let arraySlice2 = cardViews.suffix(3)
             let dealtCardViews = Array(arraySlice2)
             let arraySlice3 = cardViews.prefix(cardViews.count - 3)
             let cardsToReconfigure = Array(arraySlice3)
             cardBehaviour.animateGridReconfig(in: cardDeckView, cardsToAnimate: cardsToReconfigure, delay: 0)
-            cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: dealtCardViews, delay: 3, index: cardsToReconfigure.count)
+            cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: dealtCardViews, delay: 4, index: cardsToReconfigure.count)
         default:
             updateCardViews(onScreen: false)
         }
