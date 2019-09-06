@@ -15,6 +15,11 @@
 		C5DC573522DDB65500AC9D8B /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5DC573422DDB65500AC9D8B /* Card.swift */; };
 		C5DC573722DDBD2F00AC9D8B /* Deck.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5DC573622DDBD2F00AC9D8B /* Deck.swift */; };
 		C5DC573922DDDBF800AC9D8B /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5DC573822DDDBF800AC9D8B /* Game.swift */; };
+		C5FDEEC422EF0677005594C5 /* Grid.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5FDEEC322EF0677005594C5 /* Grid.swift */; };
+		C5FDEEC622EF1450005594C5 /* CardDeckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5FDEEC522EF1450005594C5 /* CardDeckView.swift */; };
+		C5FDEEC822EF29D8005594C5 /* CardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5FDEEC722EF29D8005594C5 /* CardView.swift */; };
+		C5FDEED222F08F63005594C5 /* IntExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5FDEED122F08F63005594C5 /* IntExtensions.swift */; };
+		C5FDEED422F08F74005594C5 /* ArrayExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5FDEED322F08F74005594C5 /* ArrayExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +33,11 @@
 		C5DC573422DDB65500AC9D8B /* Card.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
 		C5DC573622DDBD2F00AC9D8B /* Deck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Deck.swift; sourceTree = "<group>"; };
 		C5DC573822DDDBF800AC9D8B /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		C5FDEEC322EF0677005594C5 /* Grid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Grid.swift; sourceTree = "<group>"; };
+		C5FDEEC522EF1450005594C5 /* CardDeckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDeckView.swift; sourceTree = "<group>"; };
+		C5FDEEC722EF29D8005594C5 /* CardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardView.swift; sourceTree = "<group>"; };
+		C5FDEED122F08F63005594C5 /* IntExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntExtensions.swift; sourceTree = "<group>"; };
+		C5FDEED322F08F74005594C5 /* ArrayExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,9 +70,14 @@
 		C5DC572022DCCDFA00AC9D8B /* Set-Game */ = {
 			isa = PBXGroup;
 			children = (
+				C5FDEED122F08F63005594C5 /* IntExtensions.swift */,
+				C5FDEED322F08F74005594C5 /* ArrayExtensions.swift */,
+				C5FDEEC722EF29D8005594C5 /* CardView.swift */,
 				C5DC573322DCCF4500AC9D8B /* Supporting Files */,
 				C5DC572322DCCDFA00AC9D8B /* ViewController.swift */,
 				C5DC572522DCCDFA00AC9D8B /* Main.storyboard */,
+				C5FDEEC322EF0677005594C5 /* Grid.swift */,
+				C5FDEEC522EF1450005594C5 /* CardDeckView.swift */,
 				C5DC573422DDB65500AC9D8B /* Card.swift */,
 				C5DC573822DDDBF800AC9D8B /* Game.swift */,
 				C5DC573622DDBD2F00AC9D8B /* Deck.swift */,
@@ -152,11 +167,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C5FDEED222F08F63005594C5 /* IntExtensions.swift in Sources */,
+				C5FDEED422F08F74005594C5 /* ArrayExtensions.swift in Sources */,
 				C5DC573722DDBD2F00AC9D8B /* Deck.swift in Sources */,
 				C5DC573922DDDBF800AC9D8B /* Game.swift in Sources */,
 				C5DC572422DCCDFA00AC9D8B /* ViewController.swift in Sources */,
 				C5DC573522DDB65500AC9D8B /* Card.swift in Sources */,
+				C5FDEEC622EF1450005594C5 /* CardDeckView.swift in Sources */,
 				C5DC572222DCCDFA00AC9D8B /* AppDelegate.swift in Sources */,
+				C5FDEEC822EF29D8005594C5 /* CardView.swift in Sources */,
+				C5FDEEC422EF0677005594C5 /* Grid.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

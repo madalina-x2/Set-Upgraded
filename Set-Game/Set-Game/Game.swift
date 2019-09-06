@@ -9,28 +9,37 @@
 import Foundation
 
 struct Game {
+    //MARK: - Constants
+    struct Constants {
+        static let initialCardCount = 12
+        
+        struct Score {
+            static let bonusTimeInterval = 0.0...7.0
+            static let defaultTimeInterval = 7.0...15.0
+            static let bonusPoints = 2
+            static let defaultPoints = 1
+        }
+    }
     
+    //MARK: - Private Properties
     private var deck = CardDeck()
-    var deckCount: Int { return deck.cards.count }
     
+    //MARK: - Read-Only Properties
     private(set) var score = 0
     private(set) var iosScore = 0
     private(set) var set = false
     private(set) var playVersusIos = false
-    
-    private(set) var cardsOnTable = [Card]()
-    var cardsSelected = [Card]()
     private(set) var cardsSets = [[Card]]()
     private(set) var cardsHint = [Card]()
-    
     private(set) var startTime = Date()
     private(set) var endTime = Date()
-
     
-    init() {
-        dealCards(12) { deal() }
-    }
+    //MARK: - Public Properties
+    var cardsSelected = [Card]()
+    var cardsOnTable = [Card]()
+    var deckCount: Int { return deck.cards.count }
     
+    //MARK: - Computed Properties
     var isSet: Bool? {
         get {
             if cardsSelected.count == 3 {
@@ -42,7 +51,7 @@ struct Game {
                 set = newValue
                 switch newValue {
                 case true:
-                    timer()
+                    scoreAdjusterAccordingToTime()
                     cardsSets.append(cardsSelected)
                     score += scoreBonus()
                     replaceOrRemoveCard()
@@ -56,15 +65,21 @@ struct Game {
         }
     }
     
-    mutating func timer() {
+    //MARK: - Init Method
+    init() {
+        dealCards(Constants.initialCardCount) { deal() }
+    }
+    
+    //MARK: - Game Methods
+    private mutating func scoreAdjusterAccordingToTime() {
         endTime = Date()
         let timeInterval: Double = endTime.timeIntervalSince(startTime)
         
         switch timeInterval {
-        case 0...7:
-            score += 2
-        case 7...15:
-            score += 1
+        case Constants.Score.bonusTimeInterval:
+            score += Constants.Score.bonusPoints
+        case Constants.Score.defaultTimeInterval:
+            score += Constants.Score.defaultPoints
         default:
             score += 0
         }
@@ -75,26 +90,23 @@ struct Game {
         
         let chosenCard = cardsOnTable[index]
         
-        if cardsSelected.contains(chosenCard), cardsSelected.count < 3{
+        if cardsSelected.contains(chosenCard) && cardsSelected.count < 3 {
             cardsSelected = cardsSelected.filter() { $0 != chosenCard }
-        } else {
-            switch cardsSelected {
-            // if = 3 cards, check for SET match
-            case let cardsForSet where cardsForSet.count == 3:
-                isSet = isSet
-                cardsSelected.removeAll();
-                cardsSelected.append(chosenCard)
-            // if < 3 => add chosen card to selected
-            case let cardsForSet where !cardsForSet.contains(chosenCard):
-                cardsSelected.append(chosenCard)
-            // not a match, start building a set from currently chosen card
-            default: break
-            }
+            return
+        }
+        switch cardsSelected {
+        case let cardsForSet where cardsForSet.count == 3:
+            isSet = isSet
+            cardsSelected.removeAll();
+            cardsSelected.append(chosenCard)
+        case let cardsForSet where !cardsForSet.contains(chosenCard):
+            cardsSelected.append(chosenCard)
+        default: break
         }
     }
     
     mutating func reset() {
-        self = Game.init()
+        self = Game()
     }
     
     mutating func dealThreeCards() {
@@ -113,12 +125,6 @@ struct Game {
         }
     }
     
-    func isEnd() -> Bool {
-        // TODO
-        // how to check when it's over
-        return false
-    }
-    
     mutating func giveHint() {
         cardsSelected.removeAll()
         cardsHint.removeAll()
@@ -127,35 +133,7 @@ struct Game {
     }
 }
 
-// EXTENSIONS
-
-private extension Array where Element == Card {
-    func isSet() -> Bool {
-        let number     = Set(self.map { $0.number } )
-        let symbol     = Set(self.map { $0.symbol } )
-        let decoration = Set(self.map { $0.decoration } )
-        let color      = Set(self.map { $0.color } )
-        
-        return  number.count != 2 && symbol.count != 2 && decoration.count != 2 && color.count != 2
-    }
-}
-
-private extension Array where Element: Equatable {
-    func getSetCards(_ closure: (_ check: [Element]) -> (Bool)) -> [Element] {
-        for i in 0..<self.count  {
-            for j in (i + 1)..<self.count {
-                for k in (j + 1)..<self.count {
-                    let result = [self[i],self[j],self[k]]
-                    if closure(result) {
-                        return result
-                    }
-                }
-            }
-        }
-        return []
-    }
-}
-
+//MARK: - Extensions
 private extension Game {
     
     enum Score: Int {
@@ -176,7 +154,6 @@ private extension Game {
     }
     
     func scoreBonus() -> Int {
-        print("cards on table: \(cardsOnTable.count))")
         switch cardsOnTable.count {
         case 27: return 1
         case 24: return 2

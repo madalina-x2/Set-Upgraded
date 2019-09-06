@@ -10,8 +10,10 @@ import Foundation
 
 struct CardDeck {
     
+    //MARK: - Private Properties
     private(set) var cards = [Card]()
     
+    //MARK: - Overriden Methods
     init() {
         for number in Card.Number.all {
             for symbol in Card.Symbol.all {
@@ -28,31 +30,11 @@ struct CardDeck {
         cards.shuffle()
     }
     
+    //MARK: - Auxiliary Methods
     mutating func deal() -> Card? {
-        if cards.count > 0 {
-            return cards.removeLast()
-        } else {
+        if cards.isEmpty {
             return nil
         }
-    }
-}
-
-extension Int {
-    var arc4random: Int {
-        if self >= 0 {
-            return Int(arc4random_uniform(UInt32(self)))
-        }
-        return -Int(arc4random_uniform(UInt32(abs(self))))
-    }
-}
-
-extension Array {
-    mutating func shuffle() {
-        for index in stride(from: count - 1, through: 1, by: -1) {
-            let randomIndex = (index + 1).arc4random
-            if index != randomIndex {
-                self.swapAt(index, randomIndex)
-            }
-        }
+        return cards.removeLast()
     }
 }
