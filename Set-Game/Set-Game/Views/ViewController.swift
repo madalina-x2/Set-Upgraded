@@ -16,9 +16,6 @@ class ViewController: UIViewController {
     private var iosWonRound = false
     private var timer: Timer?
     
-    @IBOutlet weak var cardSpawningPointButton: UIButton!
-    @IBOutlet weak var cardRetreatingPointButton: UIButton!
-    
     @IBOutlet weak private var setCountLabel: UILabel!
     @IBOutlet weak private var scoreLabel: UILabel!
     @IBOutlet weak private var deckCountLabel: UILabel!
@@ -33,9 +30,33 @@ class ViewController: UIViewController {
             cardDeckView.addGestureRecognizer(UIRotationGestureRecognizer(target: self, action: #selector(shuffleCards)))
         }
     }
-    private var cardViews = [CardView]()
+    private var cardViews = [CardView]() {
+        didSet {
+            cardViews.enumerated().forEach({$0.element.tag = $0.offset})
+        }
+    }
     private var hintCardViews = [CardView]()
-    private var selectedCardViews = [CardView]()
+    private var selectedCardViews: [CardView] {
+        var selectedViews = [CardView]()
+        for card in game.cardsSelected {
+            if let index = game.cardsOnTable.index(of: card) {
+                selectedViews.append(cardViews[index])
+            }
+        }
+        
+        for card in game.cardsOnTable {
+            if game.cardsSelected.contains(card) {
+                if let index = game.cardsOnTable.index(of: card) {
+                    cardViews[index].setCardViewState(state: .selected)
+                }
+            } else {
+                if let index = game.cardsOnTable.index(of: card) {
+                    cardViews[index].setCardViewState(state: .normal)
+                }
+            }
+        }
+        return selectedViews
+    }
     private var dealtCardViews = [CardView]()
     lazy var animator = UIDynamicAnimator(referenceView: cardDeckView)
     lazy var cardBehaviour = CardViewBehaviour(in: animator)
@@ -44,7 +65,6 @@ class ViewController: UIViewController {
     @IBAction private func newGame(_ sender: UIButton) {
         game.reset()
         updateViewFromModel(inCase: .initView)
-//        cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: cardViews, delay: 1.0, index: 0)
         
         playAgainstIos = false
         timer?.invalidate()
@@ -82,12 +102,8 @@ class ViewController: UIViewController {
         super.viewDidLoad()
     }
     
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-        
-        cardDeckView.cardSpawningPoint = cardDeckView.convert(cardSpawningPointButton!.frame, from: cardSpawningPointButton!.superview)
-        cardDeckView.cardRetreatingPoint = cardDeckView.convert(cardRetreatingPointButton!.frame, from: cardRetreatingPointButton!.superview)
-        
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         cardDeckView.grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: cardDeckView.bounds.insetBy(dx: 10, dy: 10))
         updateViewFromModel(inCase: .initView)
     }
@@ -206,12 +222,7 @@ class ViewController: UIViewController {
             return
         }
         game.chooseCard(at: currentView.tag)
-        if selectedCardViews.count == 3 {
-            selectedCardViews.removeAll()
-        }
-        selectedCardViews.append(cardViews[currentView.tag])
-        cardViews[currentView.tag].setCardViewState(state: .selected)
-        cardDeckView.setNeedsDisplay(); cardDeckView.setNeedsLayout()
+        _ = selectedCardViews
         updateViewFromModel(inCase: .touchCard)
     }
     
@@ -247,13 +258,11 @@ class ViewController: UIViewController {
     }
     
     private func populate(card: Card, onScreen: Bool, inCase: UpdateViewCase) {
-        let newCardView = CardView(frame: view.frame, color: card.color.rawValue, number: card.number.rawValue, decoration: card.decoration.rawValue, symbol: card.symbol.rawValue)
+        let newCardView = CardView(frame: view.frame, color: card.color.rawValue, number: card.number, decoration: card.decoration.rawValue, symbol: card.symbol.rawValue)
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
         
-        newCardView.tag = cardViews.count
         newCardView.addGestureRecognizer(tap)
         cardViews.append(newCardView)
-//        displayCardsAccordingToGrid(onScreen: onScreen, inCase: inCase)
     }
     
     private func clearCardDeckView() {
@@ -289,27 +298,29 @@ class ViewController: UIViewController {
             )
             
         case .touchCard:
-//            for cardView in cardViews {
-//                if selectedCardViews.contains(cardView) == false {
-//                    cardView.setCardViewState(state: .normal)
-//                    //cardDeckView.setNeedsDisplay(); cardDeckView.setNeedsLayout()
-//                }
-//            }
-            if selectedCardViews.count == 3 {
+            if selectedCardViews.count == 3, game.isSet == true {
                 for selectedCardView in selectedCardViews {
                     cardBehaviour.snapTo(retreatingPoint: cardDeckView.cardRetreatingPoint, cardView: selectedCardView)
                     cardViews.remove(at: selectedCardView.tag)
                 }
-                let arraySlice = game.cardsOnTable.suffix(3)
-                let dealtCards = Array(arraySlice)
+                // get the new 3 cards from the model
+                let dealtCardsArraySlice = game.cardsOnTable.suffix(3)
+                let dealtCards = Array(dealtCardsArraySlice)
                 for card in dealtCards {
                     populate(card: card, onScreen: false, inCase: .deal3)
                 }
+                // place them in the spawning point
                 displayCardsAccordingToGrid(onScreen: false, inCase: .deal3)
-                let arraySlice2 = cardViews.suffix(3)
-                let dealtCardViews = Array(arraySlice2)
-                let arraySlice3 = cardViews.prefix(cardViews.count - 3)
-                let cardsToReconfigure = Array(arraySlice3)
+                
+                // make an array out of them
+                let dealtCardViewsArraySlice = cardViews.suffix(3)
+                let dealtCardViews = Array(dealtCardViewsArraySlice)
+                
+                // see which have to be reconfigured
+                let cardsToReconfigureArraySlice = cardViews.prefix(cardViews.count - 3)
+                let cardsToReconfigure = Array(cardsToReconfigureArraySlice)
+                
+                // animate 
                 cardBehaviour.animateGridReconfig(in: cardDeckView, cardsToAnimate: cardsToReconfigure, delay: 0)
                 cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: dealtCardViews, delay: 3, index: cardsToReconfigure.count)
             }

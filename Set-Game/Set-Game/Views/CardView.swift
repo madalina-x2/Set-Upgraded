@@ -27,12 +27,12 @@ class CardView: UIView {
     //MARK: - Private Properties
     private struct CardProperties {
         var color: String
-        var number: Int
+        var number: Card.Number
         var decoration: String
         var symbol: String
     }
 
-    private var cardProperties = CardProperties(color: "", number: 1, decoration: "", symbol: "")
+    private var cardProperties = CardProperties(color: "", number: .one, decoration: "", symbol: "")
     private var roundedRect = UIBezierPath()
     private var currentCardColor = UIColor()
     var isFaceUp = false { didSet { setNeedsDisplay(); setNeedsLayout() } }
@@ -44,7 +44,7 @@ class CardView: UIView {
     }
     
     //MARK: - Overriden Methods
-    init(frame: CGRect, color : String, number : Int, decoration : String, symbol: String) {
+    init(frame: CGRect, color : String, number : Card.Number, decoration : String, symbol: String) {
         cardProperties.color = color
         cardProperties.number = number
         cardProperties.decoration = decoration
@@ -180,12 +180,12 @@ class CardView: UIView {
         let xCoordinate = frame.width / divider
         let yCoordinate = frame.height / 6.5
         switch cardProperties.number {
-        case 1:
+        case .one:
             symbolOriginPoints.append(CGPoint(x: xCoordinate, y: 3*yCoordinate))
-        case 2:
+        case .two:
             symbolOriginPoints.append(CGPoint(x: xCoordinate, y: 2.5*yCoordinate))
             symbolOriginPoints.append(CGPoint(x: xCoordinate, y: 3.5*yCoordinate))
-        default:
+        case .three:
             symbolOriginPoints.append(CGPoint(x: xCoordinate, y: 2*yCoordinate))
             symbolOriginPoints.append(CGPoint(x: xCoordinate, y: 3*yCoordinate))
             symbolOriginPoints.append(CGPoint(x: xCoordinate, y: 4*yCoordinate))

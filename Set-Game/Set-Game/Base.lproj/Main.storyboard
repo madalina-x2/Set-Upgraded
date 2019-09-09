@@ -142,25 +142,7 @@
                             </stackView>
                             <view contentMode="redraw" translatesAutoresizingMaskIntoConstraints="NO" id="XZA-nl-HMn" customClass="CardDeckView" customModule="Set_Game" customModuleProvider="target">
                                 <rect key="frame" x="16" y="44" width="343" height="620"/>
-                                <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="avD-K9-Pme">
-                                        <rect key="frame" x="0.0" y="590" width="30" height="30"/>
-                                    </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Cxk-aP-fWd">
-                                        <rect key="frame" x="328" y="605" width="15" height="15"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="15" id="5PV-6J-J5J"/>
-                                            <constraint firstAttribute="width" constant="15" id="lnB-xR-5Ck"/>
-                                        </constraints>
-                                    </button>
-                                </subviews>
                                 <color key="backgroundColor" red="0.54036450386047363" green="0.69022578001022339" blue="0.63133102655410767" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="avD-K9-Pme" secondAttribute="bottom" id="9XY-wJ-mMe"/>
-                                    <constraint firstAttribute="bottom" secondItem="Cxk-aP-fWd" secondAttribute="bottom" id="G0u-xd-fXp"/>
-                                    <constraint firstItem="avD-K9-Pme" firstAttribute="leading" secondItem="XZA-nl-HMn" secondAttribute="leading" id="JZL-xw-aNP"/>
-                                    <constraint firstAttribute="trailing" secondItem="Cxk-aP-fWd" secondAttribute="trailing" id="ury-Hd-6uH"/>
-                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="0.54036450386047363" green="0.69022578001022339" blue="0.63133102655410767" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -183,8 +165,6 @@
                     </view>
                     <connections>
                         <outlet property="cardDeckView" destination="XZA-nl-HMn" id="32g-sG-ckz"/>
-                        <outlet property="cardRetreatingPointButton" destination="Cxk-aP-fWd" id="Le6-4W-PTc"/>
-                        <outlet property="cardSpawningPointButton" destination="avD-K9-Pme" id="BvZ-X6-dQs"/>
                         <outlet property="dealCardsButton" destination="bCa-yj-IwH" id="LsC-QN-p0U"/>
                         <outlet property="deckCountLabel" destination="yyw-xQ-gXL" id="18F-Sj-Tgo"/>
                         <outlet property="iosLabel" destination="Jut-NL-pXd" id="HFf-O1-7Zr"/>

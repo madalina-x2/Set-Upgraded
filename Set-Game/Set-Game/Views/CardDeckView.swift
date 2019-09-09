@@ -10,8 +10,12 @@ import UIKit
 
 class CardDeckView: UIView {
     
-    var cardSpawningPoint: CGRect!
-    var cardRetreatingPoint: CGRect!
+    var cardSpawningPoint: CGRect! {
+        return CGRect(x: 0, y: bounds.height - 15, width: 15, height: 15)
+    }
+    var cardRetreatingPoint: CGRect! {
+        return CGRect(x: bounds.width - 15, y: bounds.height - 15, width: 15, height: 15)
+    }
     lazy var grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: bounds.insetBy(dx: 10, dy: 10))
 
     //MARK: - Overriden Methods

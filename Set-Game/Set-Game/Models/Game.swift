@@ -35,7 +35,13 @@ struct Game {
     private(set) var endTime = Date()
     
     //MARK: - Public Properties
-    var cardsSelected = [Card]()
+    var cardsSelected = [Card]() {
+        didSet {
+            if cardsSelected.count == 0 {
+                NotificationCenter.default.post(name: .noCardsSelected , object: nil)
+            }
+        }
+    }
     var cardsOnTable = [Card]()
     var deckCount: Int { return deck.cards.count }
     
@@ -55,13 +61,13 @@ struct Game {
                     cardsSets.append(cardsSelected)
                     score += scoreBonus()
                     replaceOrRemoveCard()
-                    cardsSelected.removeAll()
+//                    cardsSelected.removeAll()
                     startTime = Date()
                 case false:
-                    cardsSelected.removeAll()
+//                    cardsSelected.removeAll()
                     score += scorePenalty()
                 }
-            } else { cardsSelected.removeAll() }
+            } else { /*cardsSelected.removeAll()*/ }
         }
     }
     
@@ -92,16 +98,12 @@ struct Game {
         
         if cardsSelected.contains(chosenCard) && cardsSelected.count < 3 {
             cardsSelected = cardsSelected.filter() { $0 != chosenCard }
-            return
+        } else {
+            cardsSelected.append(chosenCard)
         }
-        switch cardsSelected {
-        case let cardsForSet where cardsForSet.count == 3:
+
+        if cardsSelected.count == 3 {
             isSet = isSet
-            cardsSelected.removeAll();
-            cardsSelected.append(chosenCard)
-        case let cardsForSet where !cardsForSet.contains(chosenCard):
-            cardsSelected.append(chosenCard)
-        default: break
         }
     }
     
@@ -167,4 +169,8 @@ private extension Game {
     func scorePenalty() -> Int {
         return scoreBonus() - 7
     }
+}
+
+extension Notification.Name {
+    static let noCardsSelected = Notification.Name("No cards selected!")
 }
