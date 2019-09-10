@@ -47,15 +47,26 @@ class ViewController: UIViewController {
         for card in game.cardsOnTable {
             if game.cardsSelected.contains(card) {
                 if let index = game.cardsOnTable.index(of: card) {
+                    print("Card at \(index) is selected.")
                     cardViews[index].setCardViewState(state: .selected)
                 }
             } else {
                 if let index = game.cardsOnTable.index(of: card) {
+                    print("Card at \(index) is normal")
                     cardViews[index].setCardViewState(state: .normal)
                 }
             }
         }
         return selectedViews
+    }
+    private var removableCardViews: [CardView] {
+        var removableViews = [CardView]()
+        for card in game.cardsToRemove {
+            if let index = game.cardsOnTable.index(of: card) {
+                removableViews.append(cardViews[index])
+            }
+        }
+        return removableViews
     }
     private var dealtCardViews = [CardView]()
     lazy var animator = UIDynamicAnimator(referenceView: cardDeckView)
@@ -129,7 +140,6 @@ class ViewController: UIViewController {
     @objc func iosMakeSet() {
         game.cardsSelected.removeAll()
         game.cardsSelected = game.cardsHint
-        //updateViewFromModel()
         game.isSet = game.isSet
         waitForFunc(duration: 2.0, selector: #selector(self.iosExitRound))
     }
@@ -226,13 +236,12 @@ class ViewController: UIViewController {
         updateViewFromModel(inCase: .touchCard)
     }
     
-    private func displayCardsAccordingToGrid(onScreen: Bool, inCase: UpdateViewCase) {
+    private func displayCardsAccordingToGrid(onScreen: Bool, inCase: UpdateViewCase, indicesForReplace: [Int] = [Int]()) {
         cardDeckView.grid.cellCount = cardViews.count
         
         if inCase == .deal3 {
-            let arraySlice = cardViews.suffix(3)
-            let dealtCardViews = Array(arraySlice)
-             for cardView in dealtCardViews {
+             for index in indicesForReplace {
+                let cardView = cardViews[index]
                 cardView.frame = cardDeckView.cardSpawningPoint
                 cardView.isFaceUp = false
                 cardView.alpha = 0.0
@@ -262,7 +271,9 @@ class ViewController: UIViewController {
         let tap = UITapGestureRecognizer(target: self, action: #selector(didTap(_:)))
         
         newCardView.addGestureRecognizer(tap)
-        cardViews.append(newCardView)
+        if let indexOfCard = game.cardsOnTable.index(of: card) {
+            cardViews.insert(newCardView, at: indexOfCard)
+        }
     }
     
     private func clearCardDeckView() {
@@ -298,36 +309,39 @@ class ViewController: UIViewController {
             )
             
         case .touchCard:
-            if selectedCardViews.count == 3, game.isSet == true {
-                for selectedCardView in selectedCardViews {
-                    cardBehaviour.snapTo(retreatingPoint: cardDeckView.cardRetreatingPoint, cardView: selectedCardView)
-                    cardViews.remove(at: selectedCardView.tag)
+            if removableCardViews.count == 3, game.isSet == true {
+                for removableCardView in removableCardViews {
+                    cardBehaviour.snapTo(retreatingPoint: cardDeckView.cardRetreatingPoint, cardView: removableCardView)
                 }
-                // get the new 3 cards from the model
-                let dealtCardsArraySlice = game.cardsOnTable.suffix(3)
-                let dealtCards = Array(dealtCardsArraySlice)
-                for card in dealtCards {
-                    populate(card: card, onScreen: false, inCase: .deal3)
+                let tagsToRemove = removableCardViews.map({$0.tag}).sorted(by: {$0>$1})
+                tagsToRemove.forEach({cardViews.remove(at: $0)})
+                if game.cardsOnTable.count == 12 {
+                    let indicesToReplace = game.replaceMatchedCards()
+                    for indexToReplace in indicesToReplace {
+                        populate(card: game.cardsOnTable[indexToReplace], onScreen: false, inCase: .deal3)
+                    }
+                    displayCardsAccordingToGrid(onScreen: false, inCase: .deal3, indicesForReplace: indicesToReplace)
+                    
+                    for indexToReplace in indicesToReplace {
+                        cardBehaviour.animateFromSpawningPointToIndex(cardDeckView: cardDeckView, cardView: cardViews[indexToReplace], delay: 1, index: indexToReplace)
+                    }
+                } else {
+                    game.removeMatchedCards()
+                    cardDeckView.grid.cellCount = cardViews.count
+                    cardBehaviour.animateGridReconfig(in: cardDeckView, cardsToAnimate: cardViews, delay: 0)
                 }
-                // place them in the spawning point
-                displayCardsAccordingToGrid(onScreen: false, inCase: .deal3)
+                game.cardsToRemove.removeAll()
+                game.cardsSelected.removeAll()
+            } else if game.cardsSelected.count == 3, game.isSet == false {
+                let dummyCardViews = selectedCardViews
                 
-                // make an array out of them
-                let dealtCardViewsArraySlice = cardViews.suffix(3)
-                let dealtCardViews = Array(dealtCardViewsArraySlice)
+                for cardView in dummyCardViews {
+                    cardView.setCardViewState(state: .mismatched)
+                }
                 
-                // see which have to be reconfigured
-                let cardsToReconfigureArraySlice = cardViews.prefix(cardViews.count - 3)
-                let cardsToReconfigure = Array(cardsToReconfigureArraySlice)
-                
-                // animate 
-                cardBehaviour.animateGridReconfig(in: cardDeckView, cardsToAnimate: cardsToReconfigure, delay: 0)
-                cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: dealtCardViews, delay: 3, index: cardsToReconfigure.count)
+                game.cardsSelected.removeAll()
             }
-            
-        case .updateLabels:
             updateInfoLabels()
-            didSelectSet()
             
         case .giveHint:
             for cardView in cardViews {
@@ -336,6 +350,7 @@ class ViewController: UIViewController {
                 }
             }
             cardBehaviour.animateHint(cardViews: hintCardViews)
+            updateInfoLabels()
         
         case .deal3:
             let arraySlice = game.cardsOnTable.suffix(3)
@@ -343,13 +358,13 @@ class ViewController: UIViewController {
             for card in dealtCards {
                 populate(card: card, onScreen: false, inCase: .deal3)
             }
-            displayCardsAccordingToGrid(onScreen: false, inCase: .deal3)
+            displayCardsAccordingToGrid(onScreen: false, inCase: .deal3, indicesForReplace: Array((game.cardsOnTable.count - 3)..<game.cardsOnTable.count))
             let arraySlice2 = cardViews.suffix(3)
             let dealtCardViews = Array(arraySlice2)
             let arraySlice3 = cardViews.prefix(cardViews.count - 3)
             let cardsToReconfigure = Array(arraySlice3)
             cardBehaviour.animateGridReconfig(in: cardDeckView, cardsToAnimate: cardsToReconfigure, delay: 0)
-            cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: dealtCardViews, delay: 4, index: cardsToReconfigure.count)
+            cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: dealtCardViews, delay: 0.1 * Double(cardViews.count), index: cardsToReconfigure.count)
         default:
             updateCardViews(onScreen: false)
         }
@@ -357,6 +372,6 @@ class ViewController: UIViewController {
         if game.cardsSelected.count == 3 {
             didSelectSet()
         }
-        
+        updateInfoLabels()
     }
 }

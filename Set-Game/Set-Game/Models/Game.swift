@@ -35,14 +35,9 @@ struct Game {
     private(set) var endTime = Date()
     
     //MARK: - Public Properties
-    var cardsSelected = [Card]() {
-        didSet {
-            if cardsSelected.count == 0 {
-                NotificationCenter.default.post(name: .noCardsSelected , object: nil)
-            }
-        }
-    }
+    var cardsSelected = [Card]()
     var cardsOnTable = [Card]()
+    var cardsToRemove = [Card]()
     var deckCount: Int { return deck.cards.count }
     
     //MARK: - Computed Properties
@@ -60,11 +55,10 @@ struct Game {
                     scoreAdjusterAccordingToTime()
                     cardsSets.append(cardsSelected)
                     score += scoreBonus()
-                    replaceOrRemoveCard()
-//                    cardsSelected.removeAll()
+                    cardsToRemove = cardsSelected
                     startTime = Date()
                 case false:
-//                    cardsSelected.removeAll()
+                    //cardsSelected.removeAll()
                     score += scorePenalty()
                 }
             } else { /*cardsSelected.removeAll()*/ }
@@ -115,15 +109,22 @@ struct Game {
         dealCards(3) { deal() }
     }
     
-    private mutating func replaceOrRemoveCard() {
-        for cardSelected in cardsSelected {
+    mutating func replaceMatchedCards() -> [Int]{
+        var indicesToReplace = [Int]()
+        for cardSelected in cardsToRemove {
             let indexForChange = cardsOnTable.index(of: cardSelected)
-            
             if cardsOnTable.count <= 12, let card = deck.deal() {
                 cardsOnTable[indexForChange!] = card
-            } else {
-                cardsOnTable.remove(at: indexForChange!)
+                indicesToReplace.append(indexForChange!)
             }
+        }
+        return indicesToReplace.sorted(by: {$0 < $1})
+    }
+    
+    mutating func removeMatchedCards() {
+        for cardSelected in cardsToRemove {
+            let indexForChange = cardsOnTable.index(of: cardSelected)
+            cardsOnTable.remove(at: indexForChange!)
         }
     }
     

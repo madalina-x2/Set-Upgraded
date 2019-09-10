@@ -82,6 +82,8 @@ class CardViewBehaviour: UIDynamicBehavior {
         addChildBehavior(snap)
         snapBehaviors[snap] = cardView
         
+        print("Will remove cardview with tag \(cardView.tag)")
+
         UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: Constants.Durations.snapWhenMatchedTime,
             delay: Constants.Delays.none,
@@ -149,6 +151,23 @@ class CardViewBehaviour: UIDynamicBehavior {
             delay += 0.4
             index += 1
         }
+    }
+    
+    func animateFromSpawningPointToIndex(cardDeckView: CardDeckView, cardView: CardView, delay: TimeInterval, index: Int) {
+        let duration = Constants.Durations.dealTime
+        
+        UIViewPropertyAnimator.runningPropertyAnimator(
+            withDuration: duration,
+            delay: delay,
+            options: [],
+            animations: {
+                cardView.center = cardDeckView.grid[index]!.getCenterOf()
+                cardView.bounds.size = cardDeckView.grid[index]!.size
+                cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
+                cardView.alpha = 1.0
+        },
+            completion: self.flipOver(cardView)
+        )
     }
     
     func animateHint(cardViews: [CardView]) {
@@ -250,7 +269,7 @@ class CardViewBehaviour: UIDynamicBehavior {
                 },
                     completion: nil
                 )
-                delay += 0.2
+                delay += 0.1
                 index += 1
             }
         }

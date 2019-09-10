@@ -37,7 +37,9 @@ class CardView: UIView {
     private var currentCardColor = UIColor()
     var isFaceUp = false { didSet { setNeedsDisplay(); setNeedsLayout() } }
     private(set) var currentState: CardState = .normal {
-        didSet { setNeedsDisplay(); setNeedsLayout() }
+        didSet {
+            setNeedsDisplay()
+        }
     }
     enum CardState {
         case normal, selected, hint, matched, mismatched
@@ -59,8 +61,8 @@ class CardView: UIView {
     }
     
     override func draw(_ rect: CGRect) {
-        initCard()
         changeBackgroundColor()
+        initCard()
         drawCardOnScreen()
     }
     

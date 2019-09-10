@@ -26,8 +26,7 @@ extension Array where Element == Card {
         let decoration = Set(self.map { $0.decoration } )
         let color      = Set(self.map { $0.color } )
         
-        //return  number.count != 2 && symbol.count != 2 && decoration.count != 2 && color.count != 2
-        return true
+        return  number.count != 2 && symbol.count != 2 && decoration.count != 2 && color.count != 2
     }
 }
 
