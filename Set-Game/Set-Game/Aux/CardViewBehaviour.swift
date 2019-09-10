@@ -14,16 +14,16 @@ class CardViewBehaviour: UIDynamicBehavior {
     
     private struct Constants {
         struct Durations {
-            static let dealTime = 0.0
+            static let dealTime = 0.1
             static let hintTime = 1.0
-            static let rearrangeTime = 0.0
+            static let rearrangeTime = 0.1
             static let flipOverTime = 0.5
             static let snapWhenMatchedTime = 0.6
             static let selectionDuration = 0.1
         }
         struct Delays {
             static let none = 0.0
-            static let rearrange = 0.0
+            static let rearrange = 0.1
         }
     }
     

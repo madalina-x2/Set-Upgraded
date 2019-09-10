@@ -58,10 +58,9 @@ struct Game {
                     cardsToRemove = cardsSelected
                     startTime = Date()
                 case false:
-                    //cardsSelected.removeAll()
                     score += scorePenalty()
                 }
-            } else { /*cardsSelected.removeAll()*/ }
+            } 
         }
     }
     
@@ -107,6 +106,7 @@ struct Game {
     
     mutating func dealThreeCards() {
         dealCards(3) { deal() }
+        score += scorePenalty()
     }
     
     mutating func replaceMatchedCards() -> [Int]{

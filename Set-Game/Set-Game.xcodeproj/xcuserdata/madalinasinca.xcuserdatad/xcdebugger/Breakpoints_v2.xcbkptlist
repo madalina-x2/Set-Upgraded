@@ -10,7 +10,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Set-Game/Views/CardView.swift"
-            timestampString = "589797364.2900161"
+            timestampString = "589801565.844254"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "41"
@@ -26,12 +26,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Set-Game/Views/ViewController.swift"
-            timestampString = "589797364.2903039"
+            timestampString = "589801565.844622"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "231"
-            endingLineNumber = "231"
-            landmarkName = "didTap(_:)"
+            startingLineNumber = "127"
+            endingLineNumber = "127"
+            landmarkName = "populate(card:onScreen:inCase:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -42,7 +42,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Set-Game/Views/CardView.swift"
-            timestampString = "589797364.290907"
+            timestampString = "589801565.845309"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "254"
@@ -58,7 +58,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Set-Game/Views/CardView.swift"
-            timestampString = "589797364.29096"
+            timestampString = "589801565.8453701"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "274"
@@ -74,7 +74,7 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Set-Game/Views/CardView.swift"
-            timestampString = "589797364.291003"
+            timestampString = "589801565.845422"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "276"
@@ -90,13 +90,13 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Set-Game/Views/ViewController.swift"
-            timestampString = "589797364.291047"
+            timestampString = "589801565.8454731"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "40"
-            endingLineNumber = "40"
-            landmarkName = "selectedCardViews"
-            landmarkType = "24">
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "ViewController"
+            landmarkType = "3">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -106,11 +106,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Set-Game/Views/ViewController.swift"
-            timestampString = "589797364.291301"
+            timestampString = "589801565.845782"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "339"
-            endingLineNumber = "339"
+            startingLineNumber = "237"
+            endingLineNumber = "237"
             landmarkName = "updateViewFromModel(inCase:)"
             landmarkType = "7">
          </BreakpointContent>
@@ -122,11 +122,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Set-Game/Views/ViewController.swift"
-            timestampString = "589797364.291551"
+            timestampString = "589801565.846049"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "334"
-            endingLineNumber = "334"
+            startingLineNumber = "230"
+            endingLineNumber = "230"
             landmarkName = "updateViewFromModel(inCase:)"
             landmarkType = "7">
          </BreakpointContent>
