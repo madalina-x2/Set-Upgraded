@@ -18,12 +18,13 @@ class CardViewBehaviour: UIDynamicBehavior {
             static let hintTime = 1.0
             static let rearrangeTime = 0.1
             static let flipOverTime = 0.5
-            static let snapWhenMatchedTime = 0.6
+            static let snapWhenMatchedTime = 0.3
             static let selectionDuration = 0.1
         }
         struct Delays {
             static let none = 0.0
             static let rearrange = 0.1
+            static let snap = 0.6
         }
     }
     
@@ -78,17 +79,16 @@ class CardViewBehaviour: UIDynamicBehavior {
         collisionBehaviour.removeItem(cardView)
         
         let snap = UISnapBehavior(item: cardView, snapTo: retreatingPoint.origin)
-        snap.damping = 1.0
+        snap.damping = 1.5
         addChildBehavior(snap)
         snapBehaviors[snap] = cardView
-        
-        print("Will remove cardview with tag \(cardView.tag)")
-
+    
         UIViewPropertyAnimator.runningPropertyAnimator(
             withDuration: Constants.Durations.snapWhenMatchedTime,
-            delay: Constants.Delays.none,
+            delay: Constants.Delays.snap,
             options: [],
             animations: {
+                cardView.isFaceUp = false
                 cardView.bounds.size = retreatingPoint.size
                 cardView.reconfigureShadow()
         },
@@ -269,7 +269,7 @@ class CardViewBehaviour: UIDynamicBehavior {
                 },
                     completion: nil
                 )
-                delay += 0.1
+                delay += 0.15
                 index += 1
             }
         }

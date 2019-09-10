@@ -262,6 +262,7 @@ class ViewController: UIViewController {
             cardBehaviour.animateGridReconfig(in: cardDeckView, cardsToAnimate: cardsToReconfigure, delay: 0)
             cardBehaviour.animateFromSpawningPoint(cardDeckView: cardDeckView, cardViews: dealtCardViews, delay: 0.1 * Double(cardViews.count), index: cardsToReconfigure.count)
             updateInfoLabels()
+        //case .shuffle:
         default:
             updateCardViews(onScreen: false)
         }
