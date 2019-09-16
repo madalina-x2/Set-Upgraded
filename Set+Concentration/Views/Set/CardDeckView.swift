@@ -10,6 +10,8 @@ import UIKit
 
 class CardDeckView: UIView {
     
+    //MARK: - Public Properties
+    
     var cardSpawningPoint: CGRect! {
         return CGRect(x: 0, y: bounds.height - 15, width: 15, height: 15)
     }
@@ -19,6 +21,7 @@ class CardDeckView: UIView {
     lazy var grid = Grid(layout: .aspectRatio(CGFloat(0.625)), frame: bounds.insetBy(dx: 10, dy: 10))
 
     //MARK: - Overriden Methods
+    
     override func draw(_ rect: CGRect) {
         let roundedRect = UIBezierPath(roundedRect: bounds, cornerRadius: cornerRadius)
         roundedRect.addClip()
@@ -29,6 +32,7 @@ class CardDeckView: UIView {
 }
 
 //MARK: - Extension
+
 extension CardDeckView {
     private var cornerRadius: CGFloat {
         return bounds.size.height * CardView.Constants.SizeRatio.cornerRadiusToBoundsHeight

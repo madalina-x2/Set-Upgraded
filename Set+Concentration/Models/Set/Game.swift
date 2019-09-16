@@ -10,6 +10,7 @@ import Foundation
 
 struct Game {
     //MARK: - Constants
+    
     struct Constants {
         static let initialCardCount = 12
         
@@ -22,9 +23,11 @@ struct Game {
     }
     
     //MARK: - Private Properties
+    
     private var deck = CardDeck()
     
     //MARK: - Read-Only Properties
+    
     private(set) var score = 0
     private(set) var iosScore = 0
     private(set) var set = false
@@ -35,12 +38,14 @@ struct Game {
     private(set) var endTime = Date()
     
     //MARK: - Public Properties
+    
     var cardsSelected = [SetCard]()
     var cardsOnTable = [SetCard]()
     var cardsToRemove = [SetCard]()
     var deckCount: Int { return deck.cards.count }
     
     //MARK: - Computed Properties
+    
     var isSet: Bool? {
         get {
             if cardsSelected.count == 3 {
@@ -65,11 +70,13 @@ struct Game {
     }
     
     //MARK: - Init Method
+    
     init() {
         dealCards(Constants.initialCardCount) { deal() }
     }
     
     //MARK: - Game Methods
+    
     private mutating func scoreAdjusterAccordingToTime() {
         endTime = Date()
         let timeInterval: Double = endTime.timeIntervalSince(startTime)
@@ -137,6 +144,7 @@ struct Game {
 }
 
 //MARK: - Extensions
+
 private extension Game {
     
     enum Score: Int {

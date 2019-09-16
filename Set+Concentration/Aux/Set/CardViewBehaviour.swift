@@ -31,22 +31,7 @@ class CardViewBehaviour: UIDynamicBehavior {
     
     // MARK: - Properties
     
-    var snapBehaviors: [UISnapBehavior: CardView] = [:]
-    
-    // MARK: - Overridden Methods
-    
-    override init() {
-        super.init()
-        addChildBehavior(collisionBehaviour)
-        addChildBehavior(basicPropertyBehaviour)
-    }
-    
-    convenience init(in animator: UIDynamicAnimator) {
-        self.init()
-        animator.addBehavior(self)
-    }
-    
-    // MARK - Behaviours
+    private var snapBehaviors: [UISnapBehavior: CardView] = [:]
     
     private lazy var collisionBehaviour: UICollisionBehavior = {
         let behaviour = UICollisionBehavior()
@@ -61,6 +46,19 @@ class CardViewBehaviour: UIDynamicBehavior {
         behaviour.resistance = 0
         return behaviour
     }()
+    
+    // MARK: - Overridden Methods
+    
+    override init() {
+        super.init()
+        addChildBehavior(collisionBehaviour)
+        addChildBehavior(basicPropertyBehaviour)
+    }
+    
+    convenience init(in animator: UIDynamicAnimator) {
+        self.init()
+        animator.addBehavior(self)
+    }
     
     // MARK: Animations
     
@@ -110,27 +108,6 @@ class CardViewBehaviour: UIDynamicBehavior {
         )
     }
     
-    func push(_ item: UIDynamicItem) {
-        let push = UIPushBehavior(items: [item], mode: .instantaneous)
-        push.angle = CGFloat.pi.arc4random
-        let magnitude: CGFloat = UIDevice.current.userInterfaceIdiom == .phone ? 2 : 20
-        push.magnitude = 1.0 + magnitude.arc4random
-        push.action = { [unowned push, weak self] in
-            self?.removeChildBehavior(push)
-        }
-        addChildBehavior(push)
-    }
-    
-    func bounce(item: UIDynamicItem, cardDeckView: CardDeckView) {
-        collisionBehaviour.addItem(item)
-        let cardDeckViewFrame = UIBezierPath.init(rect: cardDeckView.bounds)
-        if collisionBehaviour.boundary(withIdentifier: "set" as NSString) == nil {
-            collisionBehaviour.addBoundary(withIdentifier: "set" as NSString, for: cardDeckViewFrame)
-        }
-        basicPropertyBehaviour.addItem(item)
-        push(item)
-    }
-    
     func animateFromSpawningPoint(cardDeckView: CardDeckView, cardViews: [CardView], delay: TimeInterval, index: Int) {
         let duration = Constants.Durations.dealTime
         var delay = delay
@@ -142,7 +119,7 @@ class CardViewBehaviour: UIDynamicBehavior {
                 delay: delay,
                 options: [],
                 animations: {
-                    cardView.center = cardDeckView.grid[index]!.getCenterOf()
+                    cardView.center = cardDeckView.grid[index]!.getCenter()
                     cardView.bounds.size = cardDeckView.grid[index]!.size
                     cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
                     cardView.alpha = 1.0
@@ -162,7 +139,7 @@ class CardViewBehaviour: UIDynamicBehavior {
             delay: delay,
             options: [],
             animations: {
-                cardView.center = cardDeckView.grid[index]!.getCenterOf()
+                cardView.center = cardDeckView.grid[index]!.getCenter()
                 cardView.bounds.size = cardDeckView.grid[index]!.size
                 cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
                 cardView.alpha = 1.0
@@ -233,7 +210,7 @@ class CardViewBehaviour: UIDynamicBehavior {
                     delay: delay,
                     options: [],
                     animations: {
-                        cardView.center = cardDeckView.grid[index]!.getCenterOf()
+                        cardView.center = cardDeckView.grid[index]!.getCenter()
                         cardView.bounds.size = cardDeckView.grid[index]!.size
                         cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
                         cardView.alpha = 1.0
@@ -262,7 +239,7 @@ class CardViewBehaviour: UIDynamicBehavior {
                     delay: delay,
                     options: [],
                     animations: {
-                        cardView.center = cardDeckView.grid[index]!.getCenterOf()
+                        cardView.center = cardDeckView.grid[index]!.getCenter()
                         cardView.bounds.size = cardDeckView.grid[index]!.size
                         cardView.reconfigureShadow()
                         cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)
@@ -287,7 +264,7 @@ class CardViewBehaviour: UIDynamicBehavior {
                 delay: delay,
                 options: [],
                 animations: {
-                    cardView.center = superview.grid[cardView.tag]!.getCenterOf()
+                    cardView.center = superview.grid[cardView.tag]!.getCenter()
                     cardView.bounds.size = superview.grid[cardView.tag]!.size
                     cardView.reconfigureShadow()
                     cardView.frame = cardView.frame.insetBy(dx: 5, dy: 5)

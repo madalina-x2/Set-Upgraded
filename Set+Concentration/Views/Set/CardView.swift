@@ -11,6 +11,7 @@ import UIKit
 class CardView: UIView {
     
     //MARK: - Constants
+    
     struct Constants {
         struct Colors {
             static let colorWhenSelected = #colorLiteral(red: 0.7302725191, green: 0.7204900723, blue: 0.6328923217, alpha: 1)
@@ -25,6 +26,7 @@ class CardView: UIView {
     }
     
     //MARK: - Private Properties
+    
     private struct CardProperties {
         var color: String
         var number: SetCard.Number
@@ -46,6 +48,7 @@ class CardView: UIView {
     }
     
     //MARK: - Overriden Methods
+    
     init(frame: CGRect, color : String, number : SetCard.Number, decoration : String, symbol: String) {
         cardProperties.color = color
         cardProperties.number = number
@@ -220,6 +223,7 @@ class CardView: UIView {
     }
     
     //MARK: - UI Methods
+    
     private func drawCardOnScreen() {
         if isFaceUp {
             let cardColor = getCardColor(cardProperties: cardProperties)
@@ -302,6 +306,7 @@ class CardView: UIView {
 }
 
 //MARK: - Extensions
+
 extension CardView {
     private var cornerRadius: CGFloat {
         return bounds.size.height * Constants.SizeRatio.cornerRadiusToBoundsHeight

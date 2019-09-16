@@ -20,7 +20,7 @@ class SetViewController: UIViewController {
     @IBOutlet weak private var dealCardsButton: UIButton!
     @IBOutlet weak private var cardDeckView: CardDeckView! {
         didSet {
-            let swipeDownForExtraCards = UISwipeGestureRecognizer(target: self, action: #selector(dealCards(_:)))
+            let swipeDownForExtraCards = UISwipeGestureRecognizer(target: self, action: #selector(didTapDealCardsButton(_:)))
             swipeDownForExtraCards.direction = .down
             cardDeckView.addGestureRecognizer(swipeDownForExtraCards)
             cardDeckView.addGestureRecognizer(UIRotationGestureRecognizer(target: self, action: #selector(shuffleCards)))
@@ -67,36 +67,7 @@ class SetViewController: UIViewController {
         return removableViews
     }
     
-    //MARK: - Button Actions
-    
-    @IBAction private func newGame(_ sender: UIButton) {
-        game.reset()
-        dealCardsButton.isEnabled = true
-        iosLabel.alpha = 0.0
-        updateViewFromModel(inCase: .initView)
-    }
-    
-    @IBAction private func dealCards(_ sender: UIButton) {
-        if game.deckCount == 0 {
-            dealCardsButton.isEnabled = false
-        } else {
-            game.dealThreeCards()
-            updateViewFromModel(inCase: .deal3)
-        }
-    }
-    
-    @IBAction func giveHint(_ sender: UIButton) {
-        game.giveHint()
-        hintCardViews.removeAll()
-        for (index, card) in game.cardsOnTable.enumerated() {
-            if game.cardsHint.contains(card) {
-                hintCardViews.append(cardViews[index])
-            }
-        }
-        updateViewFromModel(inCase: .giveHint)
-    }
-    
-    //MARK: - Overriden Methods
+    //MARK: - UIViewController Lifecycle Methods
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -111,6 +82,35 @@ class SetViewController: UIViewController {
         updateViewFromModel(inCase: .initView)
         self.navigationController?.navigationBar.barTintColor = #colorLiteral(red: 0.5407082438, green: 0.6917776465, blue: 0.6303893328, alpha: 1)
         self.navigationController?.tabBarController?.tabBar.barTintColor = #colorLiteral(red: 0.5407082438, green: 0.6917776465, blue: 0.6303893328, alpha: 1)
+    }
+    
+    //MARK: - IBActions
+    
+    @IBAction private func didTapNewGameButton(_ sender: UIButton) {
+        game.reset()
+        dealCardsButton.isEnabled = true
+        iosLabel.alpha = 0.0
+        updateViewFromModel(inCase: .initView)
+    }
+    
+    @IBAction private func didTapDealCardsButton(_ sender: UIButton) {
+        if game.deckCount == 0 {
+            dealCardsButton.isEnabled = false
+        } else {
+            game.dealThreeCards()
+            updateViewFromModel(inCase: .deal3)
+        }
+    }
+    
+    @IBAction func didTapHintButton(_ sender: UIButton) {
+        game.giveHint()
+        hintCardViews.removeAll()
+        for (index, card) in game.cardsOnTable.enumerated() {
+            if game.cardsHint.contains(card) {
+                hintCardViews.append(cardViews[index])
+            }
+        }
+        updateViewFromModel(inCase: .giveHint)
     }
     
     //MARK: - Auxiliary Methods

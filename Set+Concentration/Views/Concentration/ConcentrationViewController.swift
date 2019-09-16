@@ -118,9 +118,7 @@ class ConcentrationViewController: UIViewController {
         game.score = 0
         scoreLabel.text = "Score: 0"
         
-        for index in cardButtons.indices {
-            let button = cardButtons[index]
-            
+        for button in cardButtons {
             button.setTitle("", for: UIControlState.normal)
             button.backgroundColor = #colorLiteral(red: 0.4612599015, green: 0.7726664543, blue: 1, alpha: 1)
         }

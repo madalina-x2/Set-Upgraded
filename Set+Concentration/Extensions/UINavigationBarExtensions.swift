@@ -9,6 +9,7 @@
 import UIKit
 
 extension UINavigationController {
+    
     open override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         let height = CGFloat(50)

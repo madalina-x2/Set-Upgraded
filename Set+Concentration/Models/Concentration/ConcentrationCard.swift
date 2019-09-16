@@ -9,25 +9,33 @@
 import Foundation
 
 struct ConcentrationCard: Hashable {
+    
+    // MARK: - Private Properties
+    
+    private static var identifierFactory = 0;
+    
+    // MARK: - Public Properties
+    
     var hashValue: Int {return identifier}
-    
-    static func ==(lhs: ConcentrationCard, rhs: ConcentrationCard) -> Bool {
-        return lhs.identifier == rhs.identifier
-    }
-    
     var isFaceUp = false
     var isMatched = false
     var identifier: Int
     
-    private static var identifierFactory = 0;
+    // MARK: - Init Methods
+    
+    init() {
+        self.identifier = ConcentrationCard.getUniqueIdentifier()
+    }
+
+    // MARK: - Methods
     
     private  static func getUniqueIdentifier() -> Int {
         identifierFactory += 1
         return identifierFactory
     }
     
-    init() {
-        self.identifier = ConcentrationCard.getUniqueIdentifier()
+    static func ==(lhs: ConcentrationCard, rhs: ConcentrationCard) -> Bool {
+        return lhs.identifier == rhs.identifier
     }
 }
 

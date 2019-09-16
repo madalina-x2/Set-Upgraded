@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 extension CGRect {
-    func getCenterOf() -> CGPoint {
+    func getCenter() -> CGPoint {
         return CGPoint(x: self.midX, y: self.midY)
     }
 }
